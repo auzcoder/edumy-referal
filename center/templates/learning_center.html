@@ -1,0 +1,168 @@
+{% extends layout_path %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}Academy - My Courses - App{% endblock %}
+
+{% block vendor_css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'vendor/libs/select2/select2.css' %}" />
+  <link rel="stylesheet" href="{% static 'vendor/libs/plyr/plyr.css' %}" />
+  <link rel="stylesheet" href="{% static 'vendor/libs/toastr/toastr.css' %}" />
+{% endblock vendor_css %}
+
+{% block vendor_js %}
+  {{ block.super }}
+  <script src="{% static 'vendor/libs/select2/select2.js' %}"></script>
+  <script src="{% static 'vendor/libs/plyr/plyr.js' %}"></script>
+  <script src="{% static 'vendor/libs/toastr/toastr.js' %}"></script>
+{% endblock vendor_js %}
+
+{% block page_css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'vendor/css/pages/app-academy.css' %}" />
+{% endblock page_css %}
+
+{% block page_js %}
+  {{ block.super }}
+  <script src="{% static 'customJs/center/centerList.js' %}"></script>
+{% endblock page_js %}
+
+{% block content %}
+  <div class="app-academy">
+    <div class="card p-0 mb-6">
+      <div class="card-header d-flex justify-content-end align-items-center bg-light">
+        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addCenterModal">
+          <i class="ti ti-plus ti-xs me-1"></i> Qo'shish
+        </button>
+      </div>
+
+      <div class="card-body d-flex flex-column flex-md-row justify-content-between p-0 pt-4">
+        <div class="card-body invoice-preview-header rounded" id="all-centers">
+          <!-- Centers will be dynamically populated here -->
+        </div>
+        <div class="app-academy-md-25 d-flex align-items-end justify-content-end">
+          <img src="{% static 'img/illustrations/pencil-rocket.png' %}" alt="pencil rocket" height="188"
+               class="scaleX-n1-rtl" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Section to display center details -->
+    <div id="center-details" class="mt-4">
+      <p class="text-muted text-center">Ko'proq ma‘lumot ko‘rish uchun markazni tanlang.</p>
+    </div>
+
+    <!-- Modal for Adding Center -->
+    <div class="modal fade" id="addCenterModal" tabindex="-1" aria-labelledby="addCenterModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addCenterModalLabel">O'quv Markaz Qo'shish</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form id="addCenterForm">
+            {% csrf_token %}
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="centerName" class="form-label">Markaz nomi</label>
+                <input type="text" class="form-control" id="centerName" name="centerName"
+                       placeholder="Markaz nomini kiriting" required />
+              </div>
+              <div class="mb-3">
+                <label for="centerAdmin" class="form-label">Admin tanlash</label>
+                <select class="form-select" id="centerAdmin" name="centerAdmin" required>
+                  <option value="" selected disabled>Adminni tanlang</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+              <button type="submit" class="btn btn-primary">Saqlash</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal for Adding Filial -->
+    <div class="modal fade" id="addFilialModal" tabindex="-1" aria-labelledby="addFilialModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addFilialModalLabel">Filial Qo'shish</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form id="addFilialForm" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-body">
+              <input type="hidden" id="filialCenterId" name="centerId">
+
+              <!-- Joylashuv -->
+              <div class="mb-3">
+                <label for="filialLocation" class="form-label">Joylashuv</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="filialLocation"
+                  name="location"
+                  placeholder="Joylashuvni kiriting"
+                  required
+                />
+              </div>
+
+              <!-- Aloqa -->
+              <div class="mb-3">
+                <label for="filialContact" class="form-label">Aloqa</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="filialContact"
+                  name="contact"
+                  placeholder="Aloqa ma'lumotlarini kiriting"
+                />
+              </div>
+
+              <!-- Telegram -->
+              <div class="mb-3">
+                <label for="filialTelegram" class="form-label">Telegram</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="filialTelegram"
+                  name="telegram"
+                  placeholder="Telegram manzilini kiriting"
+                />
+              </div>
+
+              <!-- Bosh rasm -->
+              <div class="mb-3">
+                <label for="filialImage" class="form-label">Bosh Rasm</label>
+                <input type="file" class="form-control" id="filialImage" name="image" />
+              </div>
+
+              <!-- Qo'shimcha yangi rasmlar -->
+              <div class="mb-3">
+                <label for="newAdditionalImages" class="form-label">Yangi Qo'shimcha Rasmlar</label>
+                <input
+                  type="file"
+                  class="form-control"
+                  id="newAdditionalImages"
+                  name="new_images"
+                  multiple
+                />
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+              <button type="submit" class="btn btn-primary">Saqlash</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+{% endblock %}
