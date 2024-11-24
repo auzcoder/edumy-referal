@@ -154,27 +154,23 @@ $('#filter-role').on('change', function() {
 
     // Faollik holatini o'zgartirish
     dt_admins_table.on('change', '.is-active-toggle', function() {
-      var adminId = $(this).data('id');
-      var isActive = $(this).is(':checked');
+    var adminId = $(this).data('id');
+    var isVerified = $(this).is(':checked');
+    var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
 
-      // CSRF tokenni olish
-      var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
-
-      $.ajax({
+    $.ajax({
         url: `/api/update-activity/${adminId}/`,
         type: 'POST',
-        headers: {
-          'X-CSRFToken': csrfToken // CSRF tokenni yuborish
+        headers: { 'X-CSRFToken': csrfToken },
+        contentType: 'application/json', // JSON format
+        data: JSON.stringify({ is_verified: isVerified }),
+        success: function(response) {
+            toastr.success(response.message, 'Muvaffaqiyatli');
         },
-        contentType: 'application/json', // JSON formatda ma'lumot yuboriladi
-        data: JSON.stringify({ is_active: isActive }), // JSON ma'lumotni yuborish
-        success: function () {
-          toastr.success('Faollik holati muvaffaqiyatli o‘zgartirildi!', 'Yangilandi');
-        },
-        error: function () {
-          toastr.error('Xatolik yuz berdi.', 'Yangilashda xatolik');
+        error: function(response) {
+            toastr.error(response.responseJSON.message || 'Xatolik yuz berdi.', 'Xato');
         }
-      });
     });
+});
   }
 });
