@@ -109,7 +109,6 @@ class CustomUser(AbstractUser):
     last_login = models.DateTimeField(null=True, blank=True, verbose_name="So'nggi kirish vaqti")
     last_logout = models.DateTimeField(null=True, blank=True, verbose_name="So'nggi chiqish vaqti")
 
-
     username = models.CharField(null=True, blank=True, max_length=255, unique=True)
     email = models.CharField(null=True, blank=True, max_length=255, unique=True)
 
@@ -133,11 +132,14 @@ class CustomUser(AbstractUser):
     cashback = models.ManyToManyField('Cashback', blank=True, verbose_name="Cashback turlari")
     e_groups = models.ManyToManyField('center.E_groups', blank=True, verbose_name="Kurslar")
 
+    is_verified = models.BooleanField(default=False, verbose_name="Tasdiqlangan")  # Added is_verified field
+
     def __str__(self):
         return self.username or self.email or self.first_name
 
     USERNAME_FIELD = 'email'  # Users log in with their email
     REQUIRED_FIELDS = ['username']  # username required field
+
 
 class Cashback(models.Model):
     type_choices = (

@@ -7,9 +7,9 @@ from .models import CustomUser, Gender, Regions, District, Quarters, Roles, Cash
 class CustomUserAdmin(BaseUserAdmin):
     model = CustomUser
     list_display = (
-        'username', 'email', 'first_name', 'second_name', 'user_type', 'is_active', 'created_at', 'updated_at'
+        'username', 'email', 'first_name', 'second_name', 'user_type', 'is_verified', 'is_active', 'created_at', 'updated_at'
     )
-    list_filter = ('user_type', 'is_active', 'created_at', 'roles')
+    list_filter = ('user_type', 'is_verified', 'is_active', 'created_at', 'roles')
     search_fields = ('username', 'email', 'first_name', 'second_name')
     ordering = ('email',)
     filter_horizontal = ('groups', 'user_permissions', 'roles', 'cashback', 'e_groups')
@@ -23,13 +23,13 @@ class CustomUserAdmin(BaseUserAdmin):
         ('Ijtimoiy tarmoqlar', {'fields': ('telegram', 'instagram', 'facebook')}),
         ('Foydalanuvchi turi va roli', {'fields': ('user_type', 'roles', 'now_role')}),
         ('Muayyan sanalar', {'fields': ('last_login', 'last_logout', 'created_at', 'updated_at')}),
-        ('Faollik', {'fields': ('is_active', 'cashback', 'e_groups')}),
+        ('Faollik va tasdiqlash', {'fields': ('is_active', 'is_verified', 'cashback', 'e_groups')}),
     )
 
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'is_active', 'user_type'),
+            'fields': ('username', 'email', 'password1', 'password2', 'is_active', 'is_verified', 'user_type'),
         }),
     )
 
@@ -43,7 +43,17 @@ class CustomUserAdmin(BaseUserAdmin):
         updated = queryset.update(is_active=False)
         self.message_user(request, f"{updated} foydalanuvchi(lar) nofaol qilindi.")
 
-    actions = [activate_users, deactivate_users]
+    @admin.action(description="Tanlangan foydalanuvchilarni tasdiqlash")
+    def verify_users(self, request, queryset):
+        updated = queryset.update(is_verified=True)
+        self.message_user(request, f"{updated} foydalanuvchi(lar) tasdiqlandi.")
+
+    @admin.action(description="Tanlangan foydalanuvchilarni tasdiqlashni bekor qilish")
+    def unverify_users(self, request, queryset):
+        updated = queryset.update(is_verified=False)
+        self.message_user(request, f"{updated} foydalanuvchi(lar) tasdiqlash bekor qilindi.")
+
+    actions = [activate_users, deactivate_users, verify_users, unverify_users]
 
 
 @admin.register(Gender)
