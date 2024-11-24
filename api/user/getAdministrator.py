@@ -47,6 +47,7 @@ class GetAdministratorsView(View):
                     "instagram": admin.instagram,
                     "facebook": admin.facebook,
                     "is_active": admin.is_active,
+                    "is_verified": admin.is_verified,
                     "now_role": admin.get_user_type_display(),
                     "user_type": admin.get_user_type_display(),  # Turi (matn ko‘rinishida)
                     "last_login": admin.last_login.strftime('%d.%m.%Y | %H:%M') if admin.last_login else "",

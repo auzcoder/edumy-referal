@@ -11,9 +11,9 @@ class UpdateActivityView(View):
         try:
             # Ma'lumotni olish
             data = json.loads(request.body)
-            is_active = data.get('is_active', None)
+            is_verified = data.get('is_verified', None)
 
-            if is_active is None:
+            if is_verified is None:
                 return JsonResponse({'success': False, 'message': 'Faollik holati ko‘rsatilmagan.'}, status=400)
 
             # Foydalanuvchini olish
@@ -23,7 +23,7 @@ class UpdateActivityView(View):
                 return JsonResponse({'success': False, 'message': 'Administrator topilmadi.'}, status=404)
 
             # Faollik holatini o‘zgartirish
-            admin.is_active = is_active
+            admin.is_verified = is_verified
             admin.save()
 
             return JsonResponse({'success': True, 'message': 'Faollik holati muvaffaqiyatli yangilandi.'})

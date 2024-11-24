@@ -144,7 +144,6 @@
         Ro'yhatdan o'tish
       </button>
       <button type="button" class="btn-primary mt-3" @click="redirectToLogin">Kirish sahifasiga qaytish</button>
-
     </form>
   </div>
 
@@ -230,11 +229,28 @@
             backgroundColor: type === "success" ? "#4caf50" : "#f44336",
           }).showToast();
         },
-        async registerUser() {
-          if (this.password !== this.confirmPassword) {
-            this.showToast("Parollar mos emas", "error");
-            return;
+        validateFields() {
+          if (!this.firstName || !this.lastName) {
+            this.showToast("Ism va familiyani to'ldiring", "error");
+            return false;
           }
+          if (!/^\+998 \d{2} \d{3} \d{2} \d{2}$/.test(this.phoneNumber)) {
+            this.showToast("Telefon raqami noto'g'ri", "error");
+            return false;
+          }
+          if (!this.password || this.password !== this.confirmPassword) {
+            this.showToast("Parolni to'g'ri kiriting va tasdiqlang", "error");
+            return false;
+          }
+          if (!this.selectedRegion || !this.selectedDistrict || !this.selectedSchool) {
+            this.showToast("Hudud va maktabni tanlang", "error");
+            return false;
+          }
+          return true;
+        },
+        async registerUser() {
+          if (!this.validateFields()) return;
+
           const payload = {
             first_name: this.firstName,
             last_name: this.lastName,

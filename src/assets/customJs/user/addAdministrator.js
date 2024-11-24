@@ -69,7 +69,7 @@ $(document).ready(function() {
           }
         },
         {
-          data: 'is_active',
+          data: 'is_verified',
           title: 'Faollik holati',
           render: function(data, type, full) {
             return `
@@ -156,10 +156,16 @@ $('#filter-role').on('change', function() {
     dt_admins_table.on('change', '.is-active-toggle', function() {
       var adminId = $(this).data('id');
       var isActive = $(this).is(':checked');
+
+      // CSRF tokenni olish
+      var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+
       $.ajax({
         url: `/api/update-activity/${adminId}/`,
         type: 'POST',
-        headers: { 'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val() }, // CSRF tokenni yuborish
+        headers: {
+          'X-CSRFToken': csrfToken // CSRF tokenni yuborish
+        },
         contentType: 'application/json', // JSON formatda ma'lumot yuboriladi
         data: JSON.stringify({ is_active: isActive }), // JSON ma'lumotni yuborish
         success: function () {
