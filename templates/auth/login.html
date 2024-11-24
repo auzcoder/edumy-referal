@@ -194,7 +194,7 @@
               return response.json();
             })
             .then((data) => {
-              window.location.href = "{% url 'main-administrator' %}";
+              window.location.href = "{% url 'main-page-administrator' %}";
             })
             .catch((error) => {
               this.messages = ["Login yoki parol noto'g'ri. Qayta urinib ko'ring."];
