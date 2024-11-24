@@ -108,14 +108,14 @@ class CustomUser(AbstractUser):
     last_logout = models.DateTimeField(null=True, blank=True, verbose_name="So'nggi chiqish vaqti")
 
     username = models.CharField(null=True, blank=True, max_length=255, unique=True)
-    email = models.CharField(null=True, blank=True, max_length=255, unique=True)
+    email = models.EmailField(null=True, blank=True, unique=True, verbose_name="Elektron pochta")
 
     phone_number = models.CharField(null=True, max_length=15, blank=True)
-    password_save = models.CharField(_('password save'), max_length=128, blank=True, null=True)  # Added password_save field
+    password_save = models.CharField(_('password save'), max_length=128, blank=True, null=True)
 
     user_type = models.CharField(_('Type'), choices=type_choice, default="1", max_length=20, blank=True, null=True)
 
-    roles = models.ManyToManyField('Roles', blank=True, verbose_name="Roles")  # Allows multiple roles per user
+    roles = models.ManyToManyField('Roles', blank=True, verbose_name="Roles")
     now_role = models.CharField(null=True, blank=True, max_length=255, verbose_name="Foydalanuvchining hozirgi vaqtdagi roli")
 
     is_active = models.BooleanField(default=True)
@@ -130,16 +130,16 @@ class CustomUser(AbstractUser):
     cashback = models.ManyToManyField('Cashback', blank=True, verbose_name="Cashback turlari")
     e_groups = models.ManyToManyField('center.E_groups', blank=True, verbose_name="Kurslar")
 
-    is_verified = models.BooleanField(default=False, verbose_name="Tasdiqlangan")  # Added is_verified field
+    is_verified = models.BooleanField(default=False, verbose_name="Tasdiqlangan")
 
-    # Maktab bilan bog'lash
     maktab = models.ForeignKey('school.Maktab', on_delete=models.SET_NULL, verbose_name="Maktab", null=True, blank=True)
 
     def __str__(self):
-        return self.username or self.email or self.first_name
+        return self.username or self.phone_number or self.first_name
 
     USERNAME_FIELD = 'email'  # Users log in with their email
-    REQUIRED_FIELDS = ['username']  # username required field
+    REQUIRED_FIELDS = ['username']
+
 
 
 

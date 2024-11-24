@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-{% load static %}
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
@@ -11,6 +10,10 @@
 
   <!-- Vue.js -->
   <script src="{% static 'vuejs/vue/js/vue.global.prod.js' %}"></script>
+
+  <!-- Toast Notification Styles -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
   <link rel="stylesheet" href="{% static 'registration/registration.css' %}">
 </head>
@@ -53,7 +56,6 @@
       <div class="form-section">
         <label class="block text-gray-700 font-medium mb-2">Parolni kiriting</label>
         <div class="flex items-center space-x-4">
-          <!-- Parol -->
           <div class="relative w-full">
             <input
               :type="passwordVisible ? 'text' : 'password'"
@@ -63,13 +65,10 @@
               autocomplete="off"
               required
             />
-            <!-- Maymuncha ikonkasi -->
             <span class="absolute inset-y-0 right-4 flex items-center cursor-pointer" @click="togglePasswordVisibility">
               <img :src="passwordVisible ? '/static/img/monkey-open.png' : '/static/img/monkey-close.png'" alt="Maymuncha" class="w-6 h-6" />
             </span>
           </div>
-
-          <!-- Parol tasdiqlash -->
           <div class="relative w-full">
             <input
               :type="passwordVisible ? 'text' : 'password'"
@@ -83,7 +82,7 @@
         </div>
       </div>
 
-      <!-- Viloyat Dropdown -->
+      <!-- Region Dropdown -->
       <div class="form-section">
         <label class="block text-gray-700 font-medium mb-2">Viloyatni tanlang</label>
         <select
@@ -93,14 +92,13 @@
           required
         >
           <option value="" disabled selected>Viloyatni tanlang...</option>
-          <option value="">Tanlovni bekor qilish</option>
           <option v-for="region in regions" :key="region" :value="region">
             [[ region ]]
           </option>
         </select>
       </div>
 
-      <!-- Tuman Dropdown -->
+      <!-- District Dropdown -->
       <div class="form-section" v-if="districts.length > 0">
         <label class="block text-gray-700 font-medium mb-2">Tumanni tanlang</label>
         <select
@@ -110,7 +108,6 @@
           required
         >
           <option value="" disabled selected>Tumanni tanlang...</option>
-          <option value="">Tanlovni bekor qilish</option>
           <option v-for="district in districts" :key="district" :value="district">
             [[ district ]]
           </option>
@@ -126,7 +123,6 @@
           required
         >
           <option value="" disabled selected>Maktabni tanlang...</option>
-          <option value="">Tanlovni bekor qilish</option>
           <option v-for="school in schools" :key="school.value" :value="school.value">
             [[ school.number ]] | [[ school.label ]]
           </option>
@@ -147,24 +143,14 @@
       >
         Ro'yhatdan o'tish
       </button>
-      <button
-        type="button"
-        class="btn-primary bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg w-full mt-3"
-        @click="redirectToLogin"
-      >
-        Kirish sahifasiga qaytish
-      </button>
-    </form>
+      <button type="button" class="btn-primary mt-3" @click="redirectToLogin">Kirish sahifasiga qaytish</button>
 
-    <div class="footer">
-      <p>© HAMKOR | EDUMY - 2024</p>
-      <p>Dasturchi: <strong>Izzatbek Ulkanov</strong></p>
-    </div>
+    </form>
   </div>
 
   <script>
     const app = Vue.createApp({
-      delimiters: ['[[', ']]'], // Yangi delimiters
+      delimiters: ['[[', ']]'],
       data() {
         return {
           firstName: "",
@@ -179,8 +165,8 @@
           selectedRegion: null,
           selectedDistrict: null,
           selectedSchool: null,
-          regionsData: {}, // Backend API-dan ma'lumotlarni saqlash uchun
-          passwordVisible: false, // Parolni ko'rsatish holati
+          regionsData: {},
+          passwordVisible: false,
         };
       },
       mounted() {
@@ -188,57 +174,65 @@
       },
       methods: {
         togglePasswordVisibility() {
-          this.passwordVisible = !this.passwordVisible; // Ko'rsatishni/yashirishni o'zgartirish
+          this.passwordVisible = !this.passwordVisible;
         },
         async loadRegions() {
           try {
             const response = await fetch("/api/schools/grouped/");
             const data = await response.json();
-            console.log(data)
             this.regionsData = data.data;
             this.regions = Object.keys(this.regionsData);
           } catch (error) {
-            console.error("Viloyatlar yuklashda xatolik:", error);
+            this.showToast("Viloyatlar yuklashda xatolik", "error");
           }
         },
+        redirectToLogin() {
+          window.location.href = "{% url 'login' %}";
+        },
         loadDistricts() {
-        if (!this.selectedRegion) {
-          this.districts = [];
-          this.schools = [];
-          this.selectedDistrict = null;
-          this.selectedSchool = null;
-          return;
-        }
-        const regionData = this.regionsData[this.selectedRegion];
-        this.districts = Object.keys(regionData);
-        this.schools = [];
-        this.selectedDistrict = null;
-        this.selectedSchool = null;
-      },
-      loadSchools() {
-        if (!this.selectedDistrict) {
-          this.schools = [];
-          this.selectedSchool = null;
-          return;
-        }
-        const districtData = this.regionsData[this.selectedRegion][this.selectedDistrict];
-        this.schools = districtData.maktablar.map((school) => ({
-          label: school.nomi,
-          value: school.id,
-          number: school.maktab_raqami,
-        }));
-      },
+          if (!this.selectedRegion) {
+            this.districts = [];
+            this.schools = [];
+            this.selectedDistrict = null;
+            this.selectedSchool = null;
+            return;
+          }
+          const regionData = this.regionsData[this.selectedRegion];
+          this.districts = Object.keys(regionData);
+        },
+        loadSchools() {
+          if (!this.selectedDistrict) {
+            this.schools = [];
+            this.selectedSchool = null;
+            return;
+          }
+          const districtData = this.regionsData[this.selectedRegion][this.selectedDistrict];
+          this.schools = districtData.maktablar.map((school) => ({
+            label: school.nomi,
+            value: school.id,
+            number: school.maktab_raqami,
+          }));
+        },
         formatPhoneNumber(event) {
           let value = event.target.value.replace(/\D/g, "");
-          if (!value.startsWith("998")) {
-            value = "998" + value;
-          }
+          if (!value.startsWith("998")) value = "998" + value;
           value = "+998 " + value.slice(3).replace(/(\d{2})(\d{3})(\d{2})(\d{2})/, "$1 $2 $3 $4");
           this.phoneNumber = value.length > 17 ? value.slice(0, 17) : value;
         },
-        registerUser() {
+        showToast(message, type = "success") {
+          Toastify({
+            text: message,
+            className: type,
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            backgroundColor: type === "success" ? "#4caf50" : "#f44336",
+          }).showToast();
+        },
+        async registerUser() {
           if (this.password !== this.confirmPassword) {
-            alert("Parollar mos emas.");
+            this.showToast("Parollar mos emas", "error");
             return;
           }
           const payload = {
@@ -251,24 +245,18 @@
             school: this.selectedSchool,
           };
 
-          fetch("/api/register", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-          })
-            .then((response) => {
-              if (!response.ok) throw new Error("Xatolik yuz berdi.");
-              alert("Ro'yhatdan o'tish muvaffaqiyatli yakunlandi!");
-              window.location.href = "/login";
-            })
-            .catch((error) => {
-              alert("Xatolik yuz berdi. Qayta urinib ko'ring.");
+          try {
+            const response = await fetch("/api/register/", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
             });
-        },
-        redirectToLogin() {
-          window.location.href = "/login";
+            if (!response.ok) throw new Error("Xatolik yuz berdi");
+            this.showToast("Muvaffaqiyatli saqlandi", "success");
+            window.location.href = "/main";
+          } catch (error) {
+            this.showToast("Xatolik yuz berdi. Qayta urinib ko'ring", "error");
+          }
         },
       },
     });
