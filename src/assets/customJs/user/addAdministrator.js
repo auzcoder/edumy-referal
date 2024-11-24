@@ -36,6 +36,7 @@ $(document).ready(function() {
           d.searchName = $('#search-name').val(); // Ism bo‘yicha qidirish
           d.filterGender = $('#filter-gender').val(); // Jinsi bo‘yicha filtr
           d.filterStatus = $('#filter-status').val(); // Faollik holati bo‘yicha filtr
+          d.filterRole = $('#filter-role').val(); // Roll holati bo‘yicha filtr
         }
       },
       columns: [
@@ -123,6 +124,9 @@ $(document).ready(function() {
     $('#filter-gender, #filter-status').on('change', function() {
       dt_administrators.draw();
     });
+$('#filter-role').on('change', function() {
+    dt_administrators.draw();
+});
 
     // Ko‘rish tugmachasi
     dt_admins_table.on('click', '.view-details', function() {

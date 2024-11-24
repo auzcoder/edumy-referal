@@ -28,5 +28,10 @@ urlpatterns = [
         "addAdministrators/",
         login_required(UserAppView.as_view(template_name="add_administrator.html")),
         name="addAdministrators",
+    ),
+    path(
+        "manager/",
+        login_required(UserAppView.as_view(template_name="manager.html")),
+        name="user-menejer",
     )
 ]

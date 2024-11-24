@@ -9,9 +9,13 @@ class GetAdministratorsView(View):
             search_name = request.GET.get('searchName', '').strip()
             filter_gender = request.GET.get('filterGender', '').strip()
             filter_status = request.GET.get('filterStatus', '').strip()
+            filter_role = request.GET.get('filterRole', '').strip()
 
             # Foydalanuvchilarni filtrlash
-            administrators = CustomUser.objects.filter(user_type="5")
+
+            administrators = CustomUser.objects.all()
+            if filter_role:
+                administrators = administrators.filter(user_type=filter_role)
             if search_name:
                 administrators = administrators.filter(first_name__icontains=search_name)
             if filter_gender:
@@ -43,7 +47,7 @@ class GetAdministratorsView(View):
                     "instagram": admin.instagram,
                     "facebook": admin.facebook,
                     "is_active": admin.is_active,
-                    "now_role": admin.now_role,
+                    "now_role": admin.get_user_type_display(),
                     "user_type": admin.get_user_type_display(),  # Turi (matn ko‘rinishida)
                     "last_login": admin.last_login.strftime('%d.%m.%Y | %H:%M') if admin.last_login else "",
                     "last_logout": admin.last_logout,

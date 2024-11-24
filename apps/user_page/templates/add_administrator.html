@@ -350,7 +350,7 @@
           {% for role in roles %}
             <div class="col-md-4">
               <div class="form-check">
-                <input type="checkbox" name="roles" value="{{ role.id }}" id="role_{{ role.id }}"
+                <input type="radio" name="roles" value="{{ role.code }}" id="role_{{ role.id }}"
                        class="form-check-input">
                 <label for="role_{{ role.id }}" class="form-check-label">{{ role.name }}</label>
               </div>

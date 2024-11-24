@@ -30,7 +30,14 @@ class CustomUserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2', 'is_active', 'is_verified', 'user_type', 'maktab'),  # Maktab qo'shildi
+            'fields': ('username', 'email', 'password1', 'password2')}),
+        ('Shaxsiy ma\'lumotlar', {'fields': ('first_name', 'second_name', 'third_name', 'birth_date', 'gender', 'phone_number')}),
+        ('Qo\'shimcha ma\'lumotlar', {'fields': ('p_first_name', 'p_second_name', 'p_phone_number', 'passport_serial', 'passport_jshshir')}),
+        ('Hududiy ma\'lumotlar', {'fields': ('regions', 'district', 'quarters', 'address')}),
+        ('Ijtimoiy tarmoqlar', {'fields': ('telegram', 'instagram', 'facebook')}),
+        ('Foydalanuvchi turi va roli', {'fields': ('user_type', 'roles', 'now_role')}),
+        ('Muayyan sanalar', {'fields': ('last_login', 'last_logout', 'created_at', 'updated_at')}),
+        ('Faollik va tasdiqlash', {'fields': ('is_active', 'is_verified', 'cashback', 'e_groups')
         }),
     )
 

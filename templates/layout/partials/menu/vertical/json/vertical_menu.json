@@ -4,26 +4,8 @@
       "menu_header": "Foydalanuvchilar"
     },
     {
-      "url": "user-directors",
-      "name": "Direktorlar",
-      "icon": "menu-icon tf-icons ti ti-microscope",
-      "slug": "user-directors"
-    },
-    {
-      "url": "user-teachers",
-      "name": "O'qituvchilar",
-      "icon": "menu-icon tf-icons ti ti-ballpen",
-      "slug": "user-teachers"
-    },
-    {
-      "url": "user-students",
-      "name": "O'quvchilar",
-      "icon": "menu-icon tf-icons ti ti-users",
-      "slug": "user-students"
-    },
-    {
       "url": "user-administrator",
-      "name": "Adminlar",
+      "name": "Foydalanuvchilar",
       "icon": "menu-icon tf-icons ti ti-user-circle",
       "slug": "user-administrator"
     },
