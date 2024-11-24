@@ -106,6 +106,7 @@ class RegisterView(View):
                 district=district_obj,  # District obyektini qo'shish yoki None
                 maktab=school_obj,  # Maktab obyektini qo'shish yoki None
                 gender=gender_obj,  # Gender obyektini biriktirish
+                now_role="2",  # `now_role`ga avtomatik "O'qituvchi" ni key ni o'rnatish
             )
 
             # Foydalanuvchiga "O'qituvchi" rolini bog'lash
@@ -123,7 +124,7 @@ class RegisterView(View):
                 login(request, authenticated_user)
                 print("Foydalanuvchi tizimga kiritildi.")
                 # Kerakli URL'ga yo'naltirish
-                return redirect("/main")  # Replace 'main_page_administrator' with your actual URL name
+                return redirect("main-page-administrator")  # Kerakli URL'ga yo'naltirish
             else:
                 print("Xatolik: Autentifikatsiya amalga oshmadi.")
                 return JsonResponse({"error": "Autentifikatsiya amalga oshmadi."}, status=400)
@@ -131,3 +132,4 @@ class RegisterView(View):
         except Exception as e:
             print("Server xatosi:", e)  # Debug uchun log
             return JsonResponse({"error": f"Server xatosi: {str(e)}"}, status=500)
+

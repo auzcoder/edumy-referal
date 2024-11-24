@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from account.models import CustomUser
+from django.utils.timezone import now
 
 # Django 3.1 va undan yuqori versiyalarga mos keladigan JSONField
 try:
@@ -9,11 +10,15 @@ except ImportError:
     from django.contrib.postgres.fields import JSONField  # Django versiyasi past bo'lsa
 
 class Center(models.Model):
-    nomi = models.CharField(max_length=255, null=True, blank=True)
-    rahbari = models.ForeignKey(CustomUser, on_delete=models.CASCADE, max_length=100, null=True, blank=True)
+    nomi = models.CharField(max_length=255, null=True, blank=True, verbose_name="Markaz nomi")
+    rahbari = models.ForeignKey(CustomUser, on_delete=models.CASCADE, max_length=100, null=True, blank=True, verbose_name="Rahbari")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Yaratilgan vaqti")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="O'zgartirilgan vaqti")
+    is_active = models.BooleanField(default=True, verbose_name="Faolmi")
+    is_verified = models.BooleanField(default=False, verbose_name="Tasdiqlanganmi")
 
     def __str__(self):
-        return self.nomi
+        return self.nomi or "Markaz"
 
 
 User = get_user_model()
@@ -35,13 +40,14 @@ class Filial(models.Model):
     telegram = models.CharField(max_length=100, null=True, blank=True, verbose_name="Telegram")
     image = models.ImageField(upload_to='filial_images/', null=True, blank=True, verbose_name="Bosh rasm")
     images = models.ManyToManyField(Images, blank=True, verbose_name="Qo'shimcha rasmlar")
-
+    created_at = models.DateTimeField(default=now)  # Qo'shilgan vaqt maydoni
     def __str__(self):
         return self.location
 
 
 class Kasb(models.Model):
-    nomi = models.CharField(max_length=255, verbose_name="Yo'nalish nomi")
+    center = models.ForeignKey(Center, on_delete=models.CASCADE, related_name='kasblar', verbose_name="Markaz")
+    nomi = models.CharField(max_length=255, verbose_name="Kasb nomi")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Yaratilgan vaqti")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="O'zgartirilgan vaqti")
     is_active = models.BooleanField(default=True, verbose_name="Faolmi")
@@ -51,8 +57,9 @@ class Kasb(models.Model):
 
 
 class Yonalish(models.Model):
-    nomi = models.CharField(max_length=255, verbose_name="Yo'nalish")
     kasb = models.ForeignKey(Kasb, on_delete=models.CASCADE, related_name='yonalishlar', verbose_name="Kasb")
+    center = models.ForeignKey(Center, on_delete=models.CASCADE, related_name='yonalishlar', verbose_name="Markaz")
+    nomi = models.CharField(max_length=255, verbose_name="Yo'nalish nomi")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Yaratilgan vaqti")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="O'zgartirilgan vaqti")
     is_active = models.BooleanField(default=True, verbose_name="Faolmi")
@@ -63,6 +70,7 @@ class Yonalish(models.Model):
 
 class Kurs(models.Model):
     yonalish = models.ForeignKey(Yonalish, on_delete=models.CASCADE, related_name='kurslar', verbose_name="Yo'nalish")
+    center = models.ForeignKey(Center, on_delete=models.CASCADE, related_name='kurslar', verbose_name="Markaz")
     nomi = models.CharField(max_length=255, verbose_name="Kurs nomi")
     narxi = models.BigIntegerField(verbose_name="Narxi")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Yaratilgan vaqti")

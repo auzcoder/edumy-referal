@@ -1,7 +1,6 @@
 {% extends 'layout/master.html' %}
 
 {% block layout %}
-
 <!-- Content: Start -->
 {% block content %}
 <!DOCTYPE html>
@@ -16,57 +15,89 @@
 
   <style>
     body {
-      background-color: #f9f9f9;
-      font-family: 'Arial', sans-serif;
-    }
-    .container {
-      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
+      background: url('https://source.unsplash.com/random/1920x1080') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Arial', sans-serif;
     }
-    .card {
-      width: 100%;
-      max-width: 500px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+    .blur-container {
+      backdrop-filter: blur(10px);
+      background-color: rgba(255, 255, 255, 0.5); /* 50% shaffoflik */
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
     }
+
     .clock {
-      font-size: 1.25rem;
+      font-size: 1.5rem;
       font-weight: bold;
-      color: #495057;
-      margin-bottom: 1rem;
+      color: #6c757d;
+      margin-bottom: 1.5rem;
       text-align: center;
+    }
+
+    .heading {
+      color: #6c63ff;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-group-custom {
+      width: 100%;
+    }
+
+    .btn-group-custom .btn {
+      flex-grow: 1;
+      font-size: 1rem;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-group-custom .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="card p-4">
-      <h3 class="text-center">Hurmatli {{ request.user.first_name }} {{ request.user.last_name }}!</h3>
-      <div class="clock" id="clock"></div>
-      <p class="text-center text-muted">
-        Sizning hisobingiz hali admin tomonidan tasdiqlanmagan. Iltimos, biroz sabr qiling yoki quyidagi tugmalardan birini bosing.
+  <div class="blur-container">
+    <h3 class="heading">Hurmatli {{ request.user.first_name }} {{ request.user.last_name }}!</h3>
+    <div class="clock" id="clock"></div>
+
+    {% if not request.user.is_verified %}
+      <p class="text-muted">
+        Sizning hisobingiz hali admin tomonidan tasdiqlanmagan. Iltimos, biroz sabr qiling yoki quyidagi tugmalardan foydalaning.
       </p>
-      <div class="d-grid gap-2">
-        <!-- Check Verification Button -->
-        <form method="POST" action="">
-          {% csrf_token %}
-          <button class="btn btn-warning">Tasdiqlashni qayta tekshirish</button>
-        </form>
-        <!-- Profile Button -->
-        <form method="GET" action="{% url 'main-page-administrator' %}">
-          <button class="btn btn-success">Profilga kirish</button>
-        </form>
-        <!-- Home Button -->
-        <form method="GET" action="{% url 'index' %}">
-          <button class="btn btn-primary">Bosh sahifaga qaytish</button>
-        </form>
-        <!-- Logout Button -->
-        <form method="POST" action="{% url 'logout' %}">
-          {% csrf_token %}
-          <button class="btn btn-danger">Tizimdan chiqish</button>
-        </form>
-      </div>
+    {% endif %}
+
+    <!-- Button Group -->
+    <div class="btn-group btn-group-custom" role="group" aria-label="Button Group">
+      {% if not request.user.is_verified %}
+      <button type="button" class="btn btn-warning" disabled>Tasdiqlashni qayta tekshirish</button>
+      {% endif %}
+
+      <form method="GET" action="{% url 'main-page-administrator' %}" style="display:inline;">
+        <button type="submit" class="btn btn-success" {% if not request.user.is_verified %}disabled{% endif %}>
+          Profilga kirish
+        </button>
+      </form>
+
+      <form method="GET" action="{% url 'index' %}" style="display:inline;">
+        <button type="submit" class="btn btn-primary">Bosh sahifaga qaytish</button>
+      </form>
+
+      <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Tizimdan chiqish</button>
+      </form>
     </div>
   </div>
 
@@ -96,5 +127,4 @@
 </html>
 {% endblock content %}
 <!-- Content: End -->
-
 {% endblock layout %}

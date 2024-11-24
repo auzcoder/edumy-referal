@@ -9,7 +9,6 @@ class SaveRolesView(View):
         # AJAX so'rov orqali rollarni olish
         raw_roles = request.POST.getlist('roles[]', [])
 
-
         # Rollarni bo'sh bo'lishini tekshirish
         if raw_roles:
             selected_roles = raw_roles[0].split(',')
@@ -18,11 +17,12 @@ class SaveRolesView(View):
 
         # Rol kodlarini odam tushunarli nomlarga mapping qilish
         role_mappings = {
-            "5": "Admistrator | CEO",
-            "4": "Kichik admin",
+            "5": "Administrator | CEO",
+            "4": "Menejer",
             "2": "Hamkor",
             "3": "Direktor",
-            "1": "O'quvchi"
+            "1": "O'quvchi",
+            "6": "Superadmin"  # Yangi Superadmin roli qo'shilmoqda
         }
 
         # Saqlangan rollar ro'yxatini kuzatish uchun
@@ -37,6 +37,13 @@ class SaveRolesView(View):
             role, created = Roles.objects.update_or_create(code=role_code, defaults={'name': role_name})
             if created:
                 created_roles.append(f"{role_name} (ID: {role.id})")  # Rol nomi va ID ni qo'shish
+
+        # Superadmin rolini avtomatik ravishda yaratish
+        superadmin_role, superadmin_created = Roles.objects.update_or_create(
+            code="6", defaults={'name': "Superadmin"}
+        )
+        if superadmin_created:
+            created_roles.append(f"Superadmin (ID: {superadmin_role.id})")
 
         # Javobni qaytarish
         return JsonResponse({
