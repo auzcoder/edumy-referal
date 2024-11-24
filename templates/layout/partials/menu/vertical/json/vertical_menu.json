@@ -1,39 +1,6 @@
 {
   "menu": [
     {
-      "menu_header": "Asosiy sahifa"
-    },
-    {
-      "url": "main-administrator",
-      "name": "Administrator",
-      "icon": "menu-icon tf-icons ti ti-shield-half",
-      "slug": "main-administrator"
-    },
-    {
-      "url": "main-manager",
-      "name": "Menejer",
-      "icon": "menu-icon tf-icons ti ti-user-cog",
-      "slug": "main-manager"
-    },
-    {
-      "url": "main-director",
-      "name": "Direktor",
-      "icon": "menu-icon tf-icons ti ti-user-up",
-      "slug": "main-director"
-    },
-    {
-      "url": "main-teacher",
-      "name": "O'qituvchi",
-      "icon": "menu-icon tf-icons ti ti-user-screen",
-      "slug": "main-teacher"
-    },
-    {
-      "url": "main-student",
-      "name": "O'quvchi",
-      "icon": "menu-icon tf-icons ti ti-user",
-      "slug": "main-student"
-    },
-    {
       "menu_header": "Foydalanuvchilar"
     },
     {
