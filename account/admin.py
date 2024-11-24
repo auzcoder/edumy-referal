@@ -7,10 +7,10 @@ from .models import CustomUser, Gender, Regions, District, Quarters, Roles, Cash
 class CustomUserAdmin(BaseUserAdmin):
     model = CustomUser
     list_display = (
-        'username', 'email', 'first_name', 'second_name', 'user_type', 'is_verified', 'is_active', 'created_at', 'updated_at'
+        'username', 'email', 'first_name', 'second_name', 'maktab', 'user_type', 'is_verified', 'is_active', 'created_at', 'updated_at'
     )
-    list_filter = ('user_type', 'is_verified', 'is_active', 'created_at', 'roles')
-    search_fields = ('username', 'email', 'first_name', 'second_name')
+    list_filter = ('user_type', 'is_verified', 'is_active', 'created_at', 'roles', 'maktab')
+    search_fields = ('username', 'email', 'first_name', 'second_name', 'maktab__nomi', 'maktab__viloyat', 'maktab__tuman')
     ordering = ('email',)
     filter_horizontal = ('groups', 'user_permissions', 'roles', 'cashback', 'e_groups')
     readonly_fields = ('created_at', 'updated_at', 'last_login', 'last_logout')
@@ -20,6 +20,7 @@ class CustomUserAdmin(BaseUserAdmin):
         ('Shaxsiy ma\'lumotlar', {'fields': ('first_name', 'second_name', 'third_name', 'birth_date', 'gender', 'phone_number')}),
         ('Qo\'shimcha ma\'lumotlar', {'fields': ('p_first_name', 'p_second_name', 'p_phone_number', 'passport_serial', 'passport_jshshir')}),
         ('Hududiy ma\'lumotlar', {'fields': ('regions', 'district', 'quarters', 'address')}),
+        ('Maktab ma\'lumotlari', {'fields': ('maktab',)}),  # Maktab maydoni qo'shildi
         ('Ijtimoiy tarmoqlar', {'fields': ('telegram', 'instagram', 'facebook')}),
         ('Foydalanuvchi turi va roli', {'fields': ('user_type', 'roles', 'now_role')}),
         ('Muayyan sanalar', {'fields': ('last_login', 'last_logout', 'created_at', 'updated_at')}),

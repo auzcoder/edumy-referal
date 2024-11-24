@@ -3,6 +3,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from school.models import Maktab
+
 
 class CustomUserManager(BaseUserManager):
     """CustomUser model uchun username maydonisiz model menejerini aniqlash."""
@@ -76,10 +78,6 @@ class Roles(models.Model):
     def __str__(self):
         return self.name
 
-
-
-
-
 class CustomUser(AbstractUser):
     type_choice = (
         ("1", "O'quvchi"),
@@ -96,13 +94,13 @@ class CustomUser(AbstractUser):
     p_second_name = models.CharField(null=True, blank=True, max_length=255, verbose_name="Ota onasining familiya")
     p_phone_number = models.CharField(null=True, max_length=15, blank=True, verbose_name="Ota onasining telefon raqami")
 
-    gender = models.ForeignKey(Gender, on_delete=models.SET_NULL, verbose_name="Jins", blank=True, null=True)
+    gender = models.ForeignKey('Gender', on_delete=models.SET_NULL, verbose_name="Jins", blank=True, null=True)
     birth_date = models.DateField(null=True, blank=True, verbose_name="Tug'ilgan kun")
     imageFile = models.ImageField(upload_to='students/%Y/%m/%d', default='default/user.png', verbose_name="Rasmi faylda", blank=True, null=True)
 
-    regions = models.ForeignKey(Regions, on_delete=models.SET_NULL, verbose_name="Viloyat", null=True, blank=True)
-    district = models.ForeignKey(District, on_delete=models.SET_NULL, verbose_name="Tuman", null=True, blank=True)
-    quarters = models.ForeignKey(Quarters, on_delete=models.SET_NULL, verbose_name="Mahalla", blank=True, null=True)
+    regions = models.ForeignKey('Regions', on_delete=models.SET_NULL, verbose_name="Viloyat", null=True, blank=True)
+    district = models.ForeignKey('District', on_delete=models.SET_NULL, verbose_name="Tuman", null=True, blank=True)
+    quarters = models.ForeignKey('Quarters', on_delete=models.SET_NULL, verbose_name="Mahalla", blank=True, null=True)
     address = models.TextField(null=True, blank=True, verbose_name="Manzili")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Yaratilgan vaqti")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="O'zgartirilgan vaqti")
@@ -113,11 +111,11 @@ class CustomUser(AbstractUser):
     email = models.CharField(null=True, blank=True, max_length=255, unique=True)
 
     phone_number = models.CharField(null=True, max_length=15, blank=True)
-    password_save = models.CharField(('password save'), max_length=128, blank=True, null=True)  # Added password_save field
+    password_save = models.CharField(_('password save'), max_length=128, blank=True, null=True)  # Added password_save field
 
     user_type = models.CharField(_('Type'), choices=type_choice, default="1", max_length=20, blank=True, null=True)
 
-    roles = models.ManyToManyField(Roles, blank=True, verbose_name="Roles")  # Allows multiple roles per user
+    roles = models.ManyToManyField('Roles', blank=True, verbose_name="Roles")  # Allows multiple roles per user
     now_role = models.CharField(null=True, blank=True, max_length=255, verbose_name="Foydalanuvchining hozirgi vaqtdagi roli")
 
     is_active = models.BooleanField(default=True)
@@ -134,11 +132,15 @@ class CustomUser(AbstractUser):
 
     is_verified = models.BooleanField(default=False, verbose_name="Tasdiqlangan")  # Added is_verified field
 
+    # Maktab bilan bog'lash
+    maktab = models.ForeignKey('school.Maktab', on_delete=models.SET_NULL, verbose_name="Maktab", null=True, blank=True)
+
     def __str__(self):
         return self.username or self.email or self.first_name
 
     USERNAME_FIELD = 'email'  # Users log in with their email
     REQUIRED_FIELDS = ['username']  # username required field
+
 
 
 class Cashback(models.Model):
