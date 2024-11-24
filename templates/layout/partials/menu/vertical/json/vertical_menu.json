@@ -4,6 +4,18 @@
       "menu_header": "Foydalanuvchilar"
     },
     {
+      "url": "user-administrator",
+      "name": "CEO | Adminlar",
+      "icon": "menu-icon tf-icons ti ti-user-circle",
+      "slug": "user-administrator"
+    },
+    {
+      "url": "user-menejer",
+      "name": "Menejer",
+      "icon": "menu-icon tf-icons ti ti-user-circle",
+      "slug": "user-menejer"
+    },
+    {
       "url": "user-directors",
       "name": "Direktorlar",
       "icon": "menu-icon tf-icons ti ti-microscope",
@@ -20,12 +32,6 @@
       "name": "O'quvchilar",
       "icon": "menu-icon tf-icons ti ti-users",
       "slug": "user-students"
-    },
-    {
-      "url": "user-administrator",
-      "name": "Adminlar",
-      "icon": "menu-icon tf-icons ti ti-user-circle",
-      "slug": "user-administrator"
     },
     {
       "menu_header": "O'quv markaz"

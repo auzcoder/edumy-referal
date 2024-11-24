@@ -9,9 +9,14 @@ class GetAdministratorsView(View):
             search_name = request.GET.get('searchName', '').strip()
             filter_gender = request.GET.get('filterGender', '').strip()
             filter_status = request.GET.get('filterStatus', '').strip()
+            filter_role = request.GET.get('filterRole', '').strip()
+            print(filter_role)
 
             # Foydalanuvchilarni filtrlash
-            administrators = CustomUser.objects.filter(user_type="5")
+
+            administrators = CustomUser.objects.all()
+            if filter_role:
+                administrators = administrators.filter(user_type=filter_role)
             if search_name:
                 administrators = administrators.filter(first_name__icontains=search_name)
             if filter_gender:

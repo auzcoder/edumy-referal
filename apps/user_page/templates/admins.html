@@ -101,17 +101,27 @@
     <div class="card-header">
       <h5 class="card-title">Administratorlar ro'yhati</h5>
       <div class="d-flex justify-content-between align-items-center row pt-4 gap-6 gap-md-0">
-        <div class="col-md-4">
+        <div class="col-md-3">
           <input type="text" class="form-control" id="search-name" placeholder="Ismni qidirish">
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
+          <select class="form-select" id="filter-role">
+            <option value="">Tizimdagi rolli</option>
+            <option value="5">CEO_Administrator</option>
+            <option value="4">Administrator</option>
+            <option value="3">Direktor</option>
+            <option value="2">O'qituvchi</option>
+            <option value="1">O'quvchi</option>
+          </select>
+        </div>
+        <div class="col-md-3">
           <select class="form-select" id="filter-gender">
             <option value="">Jinsi</option>
             <option value="male">Erkak</option>
             <option value="female">Ayol</option>
           </select>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
           <select class="form-select" id="filter-status">
             <option value="">Faollik holati</option>
             <option value="active">Faol</option>
