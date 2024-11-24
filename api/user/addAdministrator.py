@@ -22,7 +22,8 @@ class AddAdministratorView(View):
             telegram = request.POST.get('telegram', '').strip()
             instagram = request.POST.get('instagram', '').strip()
             facebook = request.POST.get('facebook', '').strip()
-            roles = request.POST.getlist('roles')
+            roles = request.POST.get('roles', '').strip()
+            print(f"roles:" + roles)
             password = request.POST.get('password', '').strip()
             region_id = request.POST.get('regions', '').strip()
             district_id = request.POST.get('district', '').strip()
@@ -67,7 +68,7 @@ class AddAdministratorView(View):
                 return JsonResponse({'success': False, 'message': 'Jinsni aniqlashda xatolik yuz berdi!'})
 
             # Ensure "CEO_Administrator" role exists
-            ceo_admin_role, _ = Roles.objects.get_or_create(name="CEO_Administrator")
+            # ceo_admin_role, _ = Roles.objects.get_or_create(name="CEO_Administrator")
 
             # Create user
             user = CustomUser.objects.create_user(
@@ -87,14 +88,14 @@ class AddAdministratorView(View):
                 regions=region,
                 district=district,
                 quarters=quarter,
-                gender=gender,
-                now_role="CEO_Administrator",  # Set the now_role field
-                user_type="5"  # Save as CEO_Administrator in user_type
+                gender=gender, # Set the now_role field
+                user_type=roles  # Save as CEO_Administrator in user_type
             )
+            print("Created" + roles)
 
-            # Assign roles
-            if roles:
-                user.roles.set(roles)
+            # # Assign roles
+            # if roles:
+            #     user.roles.set(roles)
 
             # Authenticate and log in the user
             user = authenticate(request, username=username, password=password)

@@ -5,33 +5,9 @@
     },
     {
       "url": "user-administrator",
-      "name": "CEO | Adminlar",
+      "name": "Foydalanuvchilar",
       "icon": "menu-icon tf-icons ti ti-user-circle",
       "slug": "user-administrator"
-    },
-    {
-      "url": "user-menejer",
-      "name": "Menejer",
-      "icon": "menu-icon tf-icons ti ti-user-circle",
-      "slug": "user-menejer"
-    },
-    {
-      "url": "user-directors",
-      "name": "Direktorlar",
-      "icon": "menu-icon tf-icons ti ti-microscope",
-      "slug": "user-directors"
-    },
-    {
-      "url": "user-teachers",
-      "name": "O'qituvchilar",
-      "icon": "menu-icon tf-icons ti ti-ballpen",
-      "slug": "user-teachers"
-    },
-    {
-      "url": "user-students",
-      "name": "O'quvchilar",
-      "icon": "menu-icon tf-icons ti ti-users",
-      "slug": "user-students"
     },
     {
       "menu_header": "O'quv markaz"

@@ -10,7 +10,6 @@ class GetAdministratorsView(View):
             filter_gender = request.GET.get('filterGender', '').strip()
             filter_status = request.GET.get('filterStatus', '').strip()
             filter_role = request.GET.get('filterRole', '').strip()
-            print(filter_role)
 
             # Foydalanuvchilarni filtrlash
 
@@ -48,7 +47,7 @@ class GetAdministratorsView(View):
                     "instagram": admin.instagram,
                     "facebook": admin.facebook,
                     "is_active": admin.is_active,
-                    "now_role": admin.now_role,
+                    "now_role": admin.get_user_type_display(),
                     "user_type": admin.get_user_type_display(),  # Turi (matn ko‘rinishida)
                     "last_login": admin.last_login.strftime('%d.%m.%Y | %H:%M') if admin.last_login else "",
                     "last_logout": admin.last_logout,
