@@ -186,7 +186,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 
 
-BASE_URL = os.environ.get("BASE_URL", default="http://127.0.0.1:8000")
+BASE_URL = os.environ.get("BASE_URL", default="https://ref.edumy.uz")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
