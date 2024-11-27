@@ -123,23 +123,25 @@
     <h1 class="text-2xl font-bold mb-4 text-center">HAMKOR | EDUMY</h1>
     <p class="text-gray-500 mb-6 text-center">Kirish uchun ma'lumotlarni kiriting</p>
 
-    <!-- Error Messages -->
+    <!-- Error or Success Messages -->
     <div v-if="messages.length" class="mb-4">
       <div
         v-for="(message, index) in messages"
         :key="index"
-        class="p-3 text-sm rounded bg-red-100 text-red-800 border border-red-300 mb-2"
+        :class="message.type === 'error' ? 'bg-red-100 text-red-800 border-red-300' : 'bg-green-100 text-green-800 border-green-300'"
+        class="p-3 text-sm rounded border mb-2"
       >
-        {{ message }}
+        {{ message.text }}
       </div>
     </div>
 
     <form @submit.prevent="loginUser">
       <input
         type="text"
-        v-model="email"
+        v-model="loginInput"
         class="form-control"
-        placeholder="Email yoki foydalanuvchi nomi"
+        placeholder="Email, foydalanuvchi nomi yoki telefon raqam"
+        @input="formatLoginInput"
         required
       />
       <input
@@ -166,19 +168,33 @@
   </div>
 
   <script>
-    // Vue.js Application
     const app = Vue.createApp({
       data() {
         return {
-          email: '',
+          loginInput: '', // Foydalanuvchi kiritgan ma'lumot (email/username/phone)
           password: '',
-          messages: [],
+          messages: [], // Bildirishnomalar ro'yxati
         };
       },
       methods: {
+        formatLoginInput() {
+          // Telefon raqamni avtomatik formatlash
+          const isPhoneNumber = /^\+?\d+$/.test(this.loginInput);
+          if (isPhoneNumber) {
+            let value = this.loginInput.replace(/\D/g, ''); // Raqamlardan boshqa belgilarni olib tashlash
+            if (value.startsWith('998')) {
+              value = '+' + value; // Agar '998' bilan boshlangan bo'lsa '+998' shaklida qoldiriladi
+            }
+            this.loginInput = value.length > 13 ? value.slice(0, 13) : value;
+          }
+        },
         loginUser() {
+          const loginData = this.loginInput.startsWith('+998')
+            ? this.loginInput.replace('+', '') // Telefon raqamni `+` belgisisiz yuborish
+            : this.loginInput;
+
           const payload = {
-            email: this.email,
+            email: loginData, // Email, username yoki telefon raqam (yaroqli formatda)
             password: this.password,
           };
 
@@ -194,10 +210,17 @@
               return response.json();
             })
             .then((data) => {
-              window.location.href = "{% url 'main-page-administrator' %}";
+              this.messages = [
+                { type: "success", text: "Muvaffaqiyatli tizimga kirildi!" },
+              ];
+              setTimeout(() => {
+                window.location.href = "{% url 'main-page-administrator' %}";
+              }, 1500);
             })
-            .catch((error) => {
-              this.messages = ["Login yoki parol noto'g'ri. Qayta urinib ko'ring."];
+            .catch(() => {
+              this.messages = [
+                { type: "error", text: "Login yoki parol noto'g'ri. Qayta urinib ko'ring." },
+              ];
             });
         },
         redirectToRegister() {

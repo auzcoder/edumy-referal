@@ -24,6 +24,7 @@ LOCAL_APPS = [
     "account",
     "api",
     'auth.apps.AuthConfig',
+    "common"
 ]
 
 IN_APPS = [

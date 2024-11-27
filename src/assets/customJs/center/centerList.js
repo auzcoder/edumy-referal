@@ -48,6 +48,36 @@ $(document).ready(function() {
     loadAdmins(); // Load admins dynamically
   });
 
+    // Markaz qo'shish formasi yuborilishi
+  $('#addCenterForm').on('submit', function (e) {
+    e.preventDefault(); // Formani odatiy yuborishdan to'xtatish
+
+    const formData = new FormData(this); // Formni avtomatik yig'ish
+
+    $.ajax({
+        url: '/api/add-center/', // API endpoint
+        type: 'POST',
+        headers: { 'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val() }, // CSRF Token
+        data: formData,
+        processData: false, // FormData obyekti ishlatganda kerak
+        contentType: false, // FormData bilan content-type avtomatik aniqlanadi
+        success: function (response) {
+            if (response.success) {
+                toastr.success('O‘quv markaz muvaffaqiyatli qo‘shildi!', 'Muvaffaqiyat');
+                $('#addCenterModal').modal('hide'); // Modalni yopish
+                $('#addCenterForm')[0].reset(); // Formani tozalash
+                loadCenters(); // Yangi markazlarni yuklash funksiyasi
+            } else {
+                toastr.error(response.message || 'Markaz qo‘shishda xatolik yuz berdi.', 'Xatolik');
+            }
+        },
+        error: function () {
+            toastr.error('So‘rovda xatolik yuz berdi.', 'Xatolik');
+        },
+    });
+});
+
+
   // Reusable AJAX function
   function ajaxRequest(url, type, data, successCallback, errorCallback) {
     $.ajax({
