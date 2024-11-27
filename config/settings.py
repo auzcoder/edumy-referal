@@ -204,11 +204,14 @@ EMAIL_HOST_PASSWORD = ""
 LOGIN_URL = "/login/"
 LOGOUT_REDIRECT_URL = "/"
 
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_AGE = 3600  # 20 minutes
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
-SESSION_ENGINE = "django.contrib.sessions.backends.db"
-SESSION_COOKIE_SECURE = False
-SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SAMESITE = "Lax"
-SESSION_COOKIE_AGE = 3600
-
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8000"]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost",
+    'https://ref.edumy.uz',
+    'http://0.0.0.0',
+    'http://127.0.0.1',
+]
