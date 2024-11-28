@@ -215,3 +215,9 @@ CSRF_TRUSTED_ORIGINS = [
     'http://0.0.0.0',
     'http://127.0.0.1',
 ]
+INSTALLED_APPS += ['corsheaders']
+MIDDLEWARE += ['corsheaders.middleware.CorsMiddleware']
+
+CORS_ALLOWED_ORIGINS = [
+    "https://ref.edumy.uz",
+]
