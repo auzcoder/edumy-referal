@@ -131,7 +131,7 @@
         :class="message.type === 'error' ? 'bg-red-100 text-red-800 border-red-300' : 'bg-green-100 text-green-800 border-green-300'"
         class="p-3 text-sm rounded border mb-2"
       >
-        {{ message.text }}
+        [[ message.text ]]
       </div>
     </div>
 
@@ -169,6 +169,7 @@
 
   <script>
     const app = Vue.createApp({
+      delimiters: ['[[', ']]'], // Delimitersni o'zgartirish
       data() {
         return {
           loginInput: '', // Foydalanuvchi kiritgan ma'lumot (email/username/phone)
