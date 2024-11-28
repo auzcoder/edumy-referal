@@ -28,5 +28,20 @@ urlpatterns = [
         "occupations/",
         login_required(CenterView.as_view(template_name="occupations.html")),
         name="occupations",
+    ),
+    path(
+        "accept_students/",
+        login_required(CenterView.as_view(template_name="accept_students.html")),
+        name="accept-students",
+    ),
+    path(
+        "teacher_cashback/",
+        login_required(CenterView.as_view(template_name="teacher/cashback.html")),
+        name="teacher-cashback",
+    ),
+    path(
+        "teacher_send_student/",
+        login_required(CenterView.as_view(template_name="teacher/send_students.html")),
+        name="teacher-send-student",
     )
 ]

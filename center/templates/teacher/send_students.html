@@ -1,0 +1,232 @@
+{% extends layout_path %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}Send Student{% endblock %}
+
+{% block vendor_css %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'vendor/libs/datatables-bs5/datatables.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'vendor/libs/apex-charts/apex-charts.css' %}" />
+{% endblock vendor_css %}
+
+{% block vendor_js %}
+{{ block.super }}
+<script src="{% static 'vendor/libs/moment/moment.js' %}"></script>
+<script src="{% static 'vendor/libs/datatables-bs5/datatables-bootstrap5.js' %}"></script>
+<script src="{% static 'vendor/libs/apex-charts/apexcharts.js' %}"></script>
+{% endblock vendor_js %}
+
+{% block page_js %}
+{{ block.super }}
+<script src="{% static 'js/app-academy-dashboard.js' %}"></script>
+{% endblock page_js %}
+
+{% block content %}
+<div class="card p-4">
+  <h4 class="card-title text-center">O'quvchini Taklif Qilish</h4>
+  <form id="sendStudentForm" class="mt-4">
+    {% csrf_token %}
+    <div class="row g-3">
+      <!-- First Name -->
+      <div class="col-md-6">
+        <label for="studentFirstName" class="form-label">Ismi</label>
+        <input
+          type="text"
+          class="form-control"
+          id="studentFirstName"
+          placeholder="O'quvchining ismini kiriting"
+          required
+        />
+      </div>
+
+      <!-- Last Name -->
+      <div class="col-md-6">
+        <label for="studentLastName" class="form-label">Familiyasi</label>
+        <input
+          type="text"
+          class="form-control"
+          id="studentLastName"
+          placeholder="O'quvchining familiyasini kiriting"
+          required
+        />
+      </div>
+
+      <!-- District -->
+      <div class="col-md-6">
+        <label for="studentDistrict" class="form-label">Tuman</label>
+        <select class="form-select" id="studentDistrict" required>
+          <option value="" selected disabled>Tumanni tanlang</option>
+          <option value="1">Chilonzor</option>
+          <option value="2">Yunusobod</option>
+          <option value="3">Mirzo Ulug'bek</option>
+          <option value="4">Yakkasaroy</option>
+          <option value="5">Shayxontohur</option>
+          <option value="6">Olmazor</option>
+          <option value="7">Bektemir</option>
+          <option value="8">Uchtepa</option>
+          <option value="9">Sergeli</option>
+          <option value="10">Mirobod</option>
+        </select>
+      </div>
+
+      <!-- School -->
+      <div class="col-md-6">
+        <label for="studentSchool" class="form-label">Maktab</label>
+        <select class="form-select" id="studentSchool" required>
+          <option value="" selected disabled>Maktabni tanlang</option>
+          <option value="1">1-maktab</option>
+          <option value="2">2-maktab</option>
+          <option value="3">3-maktab</option>
+          <option value="4">4-maktab</option>
+          <option value="5">5-maktab</option>
+          <option value="6">6-maktab</option>
+          <option value="7">7-maktab</option>
+          <option value="8">8-maktab</option>
+          <option value="9">9-maktab</option>
+          <option value="10">10-maktab</option>
+        </select>
+      </div>
+
+      <!-- Grade -->
+      <div class="col-md-6">
+        <label for="studentGrade" class="form-label">Maktab Sinfi</label>
+        <select class="form-select" id="studentGrade" required>
+          <option value="" selected disabled>Sinfni tanlang</option>
+          <option value="1">1-sinf</option>
+          <option value="2">2-sinf</option>
+          <option value="3">3-sinf</option>
+          <option value="4">4-sinf</option>
+          <option value="5">5-sinf</option>
+          <option value="6">6-sinf</option>
+          <option value="7">7-sinf</option>
+          <option value="8">8-sinf</option>
+          <option value="9">9-sinf</option>
+          <option value="10">10-sinf</option>
+          <option value="11">11-sinf</option>
+        </select>
+      </div>
+
+      <!-- Section -->
+      <div class="col-md-6">
+        <label for="studentSection" class="form-label">Sinf Belgisi</label>
+        <input
+          type="text"
+          class="form-control"
+          id="studentSection"
+          placeholder="Masalan: A yoki B"
+          maxlength="1"
+          required
+        />
+      </div>
+
+      <!-- Profession -->
+      <div class="col-md-6">
+        <label for="studentProfession" class="form-label">Kasb</label>
+        <select class="form-select select2" id="studentProfession" required>
+          <option value="" selected disabled>Kasbni tanlang</option>
+          <option value="1">Dasturlash</option>
+          <option value="2">Grafik Dizayn</option>
+          <option value="3">Robototexnika</option>
+          <option value="4">Til O'rganish</option>
+        </select>
+      </div>
+
+      <!-- Field -->
+      <div class="col-md-6">
+        <label for="studentField" class="form-label">Yo'nalish</label>
+        <select class="form-select select2" id="studentField" required>
+          <option value="" selected disabled>Yo'nalishni tanlang</option>
+          <option value="1">Frontend Dasturlash</option>
+          <option value="2">Backend Dasturlash</option>
+          <option value="3">Grafik Dizayn Asoslari</option>
+          <option value="4">IELTS Tayyorlov</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mt-4 d-flex justify-content-end">
+      <button type="submit" class="btn btn-primary">
+        <i class="ti ti-send"></i> Yuborish
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Yuborilgan O'quvchilar Ro'yhati -->
+<div class="card mt-4">
+  <div class="card-header">
+    <h5 class="card-title mb-0">Yuborilgan O'quvchilar Ro'yhati</h5>
+  </div>
+  <div class="card-body">
+    <!-- Filters -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="filterStatus" class="form-label">Status bo'yicha filtrlash</label>
+        <select class="form-select" id="filterStatus">
+          <option value="" selected>Barchasi</option>
+          <option value="pending">Kutilmoqda</option>
+          <option value="accepted">Qabul qilingan</option>
+          <option value="rejected">Rad etilgan</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="filterDate" class="form-label">Vaqt bo'yicha filtrlash</label>
+        <input type="date" class="form-control" id="filterDate" />
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Ismi</th>
+            <th>Familiyasi</th>
+            <th>Tuman</th>
+            <th>Sinf</th>
+            <th>Status</th>
+            <th>Vaqt</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Javlon</td>
+            <td>Ismoilov</td>
+            <td>Chilonzor</td>
+            <td>8-A</td>
+            <td>Kutilmoqda</td>
+            <td>2023-11-20</td>
+          </tr>
+          <tr>
+            <td>Aziz</td>
+            <td>Karimov</td>
+            <td>Yunusobod</td>
+            <td>9-B</td>
+            <td>Qabul qilingan</td>
+            <td>2023-11-18</td>
+          </tr>
+          <tr>
+            <td>Laylo</td>
+            <td>Usmonova</td>
+            <td>Sergeli</td>
+            <td>10-C</td>
+            <td>Rad etilgan</td>
+            <td>2023-11-15</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+

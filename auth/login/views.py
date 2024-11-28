@@ -32,24 +32,32 @@ class JWTAuthView(APIView):
     permission_classes = [AllowAny]  # Kirish vaqtida autentifikatsiya talab qilinmaydi
 
     def post(self, request):
+        print("POST so'rov qabul qilindi.")  # Debugging
         username = request.data.get("email")  # Kirish uchun email yoki username maydonini olamiz
         password = request.data.get("password")
+
+        print(f"Kirish uchun kiritilgan ma'lumotlar: email={username}, password=****")  # Debugging
 
         # Foydalanuvchini autentifikatsiya qilish
         user = authenticate(request, username=username, password=password)
         if user is not None:
+            print(f"Foydalanuvchi autentifikatsiya qilindi: {user}")  # Debugging
+
             # Django sessiyasi bilan tizimga kirish
             login(request, user)
+            print("Foydalanuvchi sessiya tizimiga kiritildi.")  # Debugging
 
             # UserActivity modelida log yaratish
             UserActivity.objects.create(
                 user=user,
                 login_time=timezone.now()  # Kirish vaqtini hozirgi vaqt bilan belgilash
             )
+            print("UserActivity log yaratildi.")  # Debugging
 
             # JWT tokenlarni yaratish
             refresh = RefreshToken.for_user(user)
             access_token = refresh.access_token
+            print(f"JWT tokenlar yaratildi. Access: {access_token}, Refresh: {refresh}")  # Debugging
 
             # JWT tokenni va sessiya cookie'sini o'rnatish
             response = Response({"message": "Successfully logged in"}, status=status.HTTP_200_OK)
@@ -61,6 +69,7 @@ class JWTAuthView(APIView):
                 samesite="Lax",
                 max_age=settings.SIMPLE_JWT['ACCESS_TOKEN_LIFETIME'].total_seconds()
             )
+            print("Access token cookie'ga o'rnatildi.")  # Debugging
 
             # Refresh tokenni ham alohida cookie’da saqlash
             response.set_cookie(
@@ -71,8 +80,11 @@ class JWTAuthView(APIView):
                 samesite="Lax",
                 max_age=settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME'].total_seconds()
             )
+            print("Refresh token cookie'ga o'rnatildi.")  # Debugging
+
             return response
         else:
+            print("Autentifikatsiya muvaffaqiyatsiz. Login yoki parol noto'g'ri.")  # Debugging
             return Response({"error": "Login yoki parol noto'g'ri"}, status=status.HTTP_401_UNAUTHORIZED)
 
 

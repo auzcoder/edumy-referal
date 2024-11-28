@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from account.models import CustomUser
 from django.utils.timezone import now
+from school.models import Maktab, Sinf, Belgisi
+
 
 # Django 3.1 va undan yuqori versiyalarga mos keladigan JSONField
 try:
@@ -39,10 +41,12 @@ class Filial(models.Model):
     contact = models.CharField(max_length=100, null=True, blank=True, verbose_name="Aloqa")
     telegram = models.CharField(max_length=100, null=True, blank=True, verbose_name="Telegram")
     image = models.ImageField(upload_to='filial_images/', null=True, blank=True, verbose_name="Bosh rasm")
-    images = models.ManyToManyField(Images, blank=True, verbose_name="Qo'shimcha rasmlar")
-    created_at = models.DateTimeField(default=now)  # Qo'shilgan vaqt maydoni
+    images = models.ManyToManyField('Images', blank=True, verbose_name="Qo'shimcha rasmlar")
+    admins = models.ManyToManyField(CustomUser, blank=True, related_name="administered_filials", verbose_name="Administratorlar")  # Adminlar maydoni
+    created_at = models.DateTimeField(default=now, verbose_name="Qo'shilgan vaqt")  # Qo'shilgan vaqt maydoni
+
     def __str__(self):
-        return self.location
+        return self.location or "Filial"
 
 
 class Kasb(models.Model):
@@ -119,3 +123,42 @@ class GroupMembership(models.Model):
 
     def __str__(self):
         return f"{self.student} - {self.group.group_name} - {'Faol' if self.is_active else 'Nofaol'}"
+
+
+# Main Model for Storing Submitted Students
+class SubmittedStudent(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Kutilmoqda'),
+        ('accepted', 'Qabul qilingan'),
+        ('accept_group', 'Guruhga qabul qilindi'),
+        ('rejected', 'Rad etilgan'),
+    ]
+
+    # Student Personal Information
+    first_name = models.CharField(max_length=100, verbose_name="Ismi")
+    last_name = models.CharField(max_length=100, verbose_name="Familiyasi")
+
+    # Foreign Keys
+    sinf = models.ForeignKey(Sinf, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Sinf")
+    kasb = models.ForeignKey(Kasb, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Kasb")
+    yonalish = models.ForeignKey(Yonalish, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Yo'nalish")
+
+    belgisi = models.CharField(max_length=100, verbose_name="Sinf Belgisi")
+
+    # Status
+    status = models.CharField(
+        max_length=15,  # Kifoya qiladigan uzunlikka oshirildi
+        choices=STATUS_CHOICES,
+        default='pending',
+        verbose_name="Holati"
+    )
+
+    # Metadata
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Yaratilgan vaqti")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Yangilangan vaqti")
+    added_by = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Qo'shgan foydalanuvchi")
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} - {self.status}"
+
+

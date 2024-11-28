@@ -44,6 +44,13 @@
       "allowed_roles": ["6", "4", "5"]
     },
     {
+      "url": "accept-students",
+      "name": "Qabul qilish",
+      "icon": "menu-icon tf-icons ti ti-user-down",
+      "slug": "accept-students",
+      "allowed_roles": ["6", "4", "5"]
+    },
+    {
       "menu_header": "Maktab",
       "allowed_roles": ["4", "6", "5"]
     },
@@ -94,17 +101,17 @@
       "allowed_roles": ["6"]
     },
     {
-      "url": "user-administrator",
+      "url": "teacher-cashback",
       "name": "Keshbek",
       "icon": "menu-icon tf-icons ti ti-brand-cashapp",
-      "slug": "user-administrator",
+      "slug": "teacher-cashback",
       "allowed_roles": ["1", "2", "3"]
     },
     {
-      "url": "user-administrator",
-      "name": "O'quvchilar",
+      "url": "teacher-send-student",
+      "name": "O'quvchi yuborish",
       "icon": "menu-icon tf-icons ti ti-user-circle",
-      "slug": "user-administrator",
+      "slug": "teacher-send-student",
       "allowed_roles": ["1", "2", "3"]
     },
     {
