@@ -1,3 +1,5 @@
+import re
+
 from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model
@@ -33,13 +35,27 @@ class JWTAuthView(APIView):
 
     def post(self, request):
         print("POST so'rov qabul qilindi.")  # Debugging
-        username = request.data.get("email")  # Kirish uchun email yoki username maydonini olamiz
+
+        login_input = request.data.get("email")  # Kirish uchun email, username yoki telefon raqam
         password = request.data.get("password")
 
-        print(f"Kirish uchun kiritilgan ma'lumotlar: email={username}, password=****")  # Debugging
+        print(f"Kirish uchun kiritilgan ma'lumotlar: input={login_input}, password=****")  # Debugging
 
-        # Foydalanuvchini autentifikatsiya qilish
-        user = authenticate(request, username=username, password=password)
+        # Login ma'lumotining turini aniqlash
+        email_regex = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'  # Email formatini tekshirish
+        phone_regex = r'^998\d{9}$'  # Telefon raqam formatini tekshirish
+
+        if re.match(email_regex, login_input):
+            login_field = 'email'
+        elif re.match(phone_regex, login_input):
+            login_field = 'phone_number'
+        else:
+            login_field = 'username'
+
+        print(f"Aniqlangan login maydoni: {login_field}")  # Debugging
+
+        # Autentifikatsiya qilish uchun `username` sifatida mos qiymatni uzatamiz
+        user = authenticate(request, username=login_input, password=password)
         if user is not None:
             print(f"Foydalanuvchi autentifikatsiya qilindi: {user}")  # Debugging
 
@@ -86,6 +102,7 @@ class JWTAuthView(APIView):
         else:
             print("Autentifikatsiya muvaffaqiyatsiz. Login yoki parol noto'g'ri.")  # Debugging
             return Response({"error": "Login yoki parol noto'g'ri"}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 
 class CookieJWTAuthentication(JWTAuthentication):
