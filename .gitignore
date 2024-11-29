@@ -4,15 +4,12 @@ __pycache__/
 *$py.class
 
 # Byte-compiled / optimized / DLL files
-__pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# Exclude pycache and other ignored files in specific directories
-auth/login/__pycache__/
-auth/__pycache__/
-views/__pycache__/
+# Exclude pycache in all subdirectories
+**/__pycache__/
 
 # Django log and temporary files
 *.log
