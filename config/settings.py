@@ -14,7 +14,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", default='')
 
 DEBUG = os.environ.get("DEBUG", 'False').lower() in ['true', 'yes', '1']
 
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", "ref.edumy.uz"]
 
 ENVIRONMENT = os.environ.get("DJANGO_ENVIRONMENT", default="local")
 
@@ -201,4 +201,10 @@ SESSION_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_AGE = 3600
 SECURE_SSL_REDIRECT = not DEBUG  # HTTPS ga yo'naltirish (faqat prodaksiyada)
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8000"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://127.0.0.1:8000", "https://ref.edumy.uz"]
+
+
+
+
+
+
