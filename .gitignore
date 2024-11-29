@@ -9,7 +9,7 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Add the new patterns to exclude `pycache` and other ignored files
+# Exclude pycache and other ignored files in specific directories
 auth/login/__pycache__/
 auth/__pycache__/
 views/__pycache__/
@@ -27,7 +27,13 @@ env/
 ENV/
 env.bak/
 venv.bak/
-__pycache__
+
+# Static and media files (Django-generated)
+staticfiles/
+media/
+
+# Django migrations
+**/migrations/
 
 # Additional caches and build artifacts
 .mypy_cache/
