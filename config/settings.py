@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("SECRET_KEY", default='')
 
-DEBUG = os.environ.get("DEBUG", 'True').lower() in ['true', 'yes', '1']
+DEBUG = os.environ.get("DEBUG", 'False').lower() in ['true', 'yes', '1']
 
 ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
 
@@ -143,17 +143,6 @@ DATABASES = {
 }
 
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "arm_db",
-#         "USER": "arm_user",
-#         "PASSWORD": "arm1231",
-#         "HOST": "localhost",
-#         "PORT": "5432",
-#     }
-# }
-
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -210,5 +199,6 @@ SESSION_COOKIE_SECURE = False
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_AGE = 3600
+SECURE_SSL_REDIRECT = not DEBUG  # HTTPS ga yo'naltirish (faqat prodaksiyada)
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:8000"]
