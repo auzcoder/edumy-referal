@@ -108,7 +108,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -174,8 +174,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
-
-BASE_URL = os.environ.get("BASE_URL", default="http://127.0.0.1:8000")
+#
+# BASE_URL = os.environ.get("BASE_URL", default="https://ref.edumy.uz")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -193,6 +193,11 @@ EMAIL_HOST_PASSWORD = ""
 LOGIN_URL = "/login/"
 LOGOUT_REDIRECT_URL = "/"
 
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_AGE = 3600  # 20 minutes
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
 
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SESSION_COOKIE_SECURE = False
@@ -202,9 +207,3 @@ SESSION_COOKIE_AGE = 3600
 SECURE_SSL_REDIRECT = not DEBUG  # HTTPS ga yo'naltirish (faqat prodaksiyada)
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://127.0.0.1:8000", "https://ref.edumy.uz"]
-
-
-
-
-
-
