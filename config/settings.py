@@ -199,9 +199,22 @@ SESSION_COOKIE_SECURE = False
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_AGE = 3600
-SECURE_SSL_REDIRECT = not DEBUG  # HTTPS ga yo'naltirish (faqat prodaksiyada)
+SECURE_SSL_REDIRECT = True  # HTTP so'rovlarni avtomatik HTTPS ga yo'naltirish
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # Reverse proxy orqali HTTPS sozlash
+SECURE_HSTS_SECONDS = 31536000  # HSTPSTS (HT Strict Transport Security) faollashtirish
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Subdomenlarga ham HSTS
+SECURE_HSTS_PRELOAD = True  # HSTS preload ro'yxatiga qo'shish
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Xavfsizlik uchun MIME turi tekshiruvi
+SECURE_BROWSER_XSS_FILTER = True  # XSS hujumlariga qarshi himoya
+CSRF_COOKIE_SECURE = True  # CSRF cookie faqat HTTPS orqali ishlaydi
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8000", "http://127.0.0.1:8000", "https://ref.edumy.uz"]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "https://ref.edumy.uz",
+    "https://www.ref.edumy.uz",
+]
 
 
 
