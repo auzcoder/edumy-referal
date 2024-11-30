@@ -14,7 +14,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", default='')
 
 DEBUG = os.environ.get("DEBUG", 'False').lower() in ['true', 'yes', '1']
 
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", "ref.edumy.uz"]
+ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", "ref.edumy.uz", ".ref.edumy.uz"]
 
 ENVIRONMENT = os.environ.get("DJANGO_ENVIRONMENT", default="local")
 

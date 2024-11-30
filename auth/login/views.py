@@ -5,7 +5,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.views import View
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from account.models import UserActivity
 from auth.views import AuthView
 from django.http import JsonResponse
@@ -22,7 +23,7 @@ class LoginView(AuthView):
         # Login sahifasini ko'rsatish
         return super().get(request)
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class DjangoAuthLoginView(View):
     def post(self, request):
         print("POST so'rov qabul qilindi.")  # Debugging
