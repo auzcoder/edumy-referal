@@ -29,6 +29,8 @@ class AddAdministratorView(View):
             district_id = request.POST.get('district', '').strip()
             quarter_id = request.POST.get('quarters', '').strip()
 
+            print(roles)
+
             # Validation
             if not all([first_name, second_name, username, email, phone_number, password]):
                 return JsonResponse({'success': False, 'message': 'Barcha maydonlar to‘ldirilishi kerak!'})
@@ -67,9 +69,6 @@ class AddAdministratorView(View):
             if not gender:
                 return JsonResponse({'success': False, 'message': 'Jinsni aniqlashda xatolik yuz berdi!'})
 
-            # Ensure "CEO_Administrator" role exists
-            # ceo_admin_role, _ = Roles.objects.get_or_create(name="CEO_Administrator")
-
             # Create user
             user = CustomUser.objects.create_user(
                 username=username,
@@ -87,15 +86,12 @@ class AddAdministratorView(View):
                 facebook=facebook,
                 regions=region,
                 district=district,
+                now_role=str(roles),
                 quarters=quarter,
                 gender=gender, # Set the now_role field
                 user_type=roles  # Save as CEO_Administrator in user_type
             )
             print("Created" + roles)
-
-            # # Assign roles
-            # if roles:
-            #     user.roles.set(roles)
 
             # Authenticate and log in the user
             user = authenticate(request, username=username, password=password)

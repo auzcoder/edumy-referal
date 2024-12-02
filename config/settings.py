@@ -2,26 +2,27 @@ import os
 from pathlib import Path
 from datetime import timedelta
 from django.utils.translation import gettext_lazy as _
-from dotenv import load_dotenv
+from decouple import config
 from .template import TEMPLATE_CONFIG, THEME_LAYOUT_DIR, THEME_VARIABLES
 
 
-load_dotenv()
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get("SECRET_KEY", default='')
+SECRET_KEY = config('SECRET_KEY', default='fallback-secret-key')
 
-DEBUG = os.environ.get("DEBUG", 'False').lower() in ['true', 'yes', '1']
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", "ref.edumy.uz", ".ref.edumy.uz"]
 
-ENVIRONMENT = os.environ.get("DJANGO_ENVIRONMENT", default="local")
+ENVIRONMENT = config('DJANGO_ENVIRONMENT', default='local')
 
+os.environ.get
 LOCAL_APPS = [
-    "school",
-    "center",
     "account",
+    "center",
+    "school",
     "api",
     'auth.apps.AuthConfig',
     "common"
@@ -42,12 +43,13 @@ GLOBAL_APPS = [
 
 SYSTEM_APPS = [
     "django.contrib.admin",
+    "django.contrib.sites",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.sites",
+
 ]
 
 
@@ -101,6 +103,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+MIDDLEWARE += [
+    "config.middleware.last_login_notification.LastLoginNotificationMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -163,11 +168,33 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
+SITE_ID = 1
+
 LOCALE_PATHS = [BASE_DIR / "locale"]
 
+# # Statik va media fayllar konfiguratsiyasi
+# if ENVIRONMENT == "production":
+#     # Ishlab chiqarish muhitida
+#     STATIC_URL = "/static/"
+#     STATIC_ROOT = BASE_DIR / "staticfiles"  # `collectstatic` bilan fayllarni shu joyga yig'adi
+#     MEDIA_URL = '/media/'
+#     MEDIA_ROOT = BASE_DIR / 'media'
+# else:
+#     # Lokal muhitda
+#     STATIC_URL = "/static/"
+#     STATICFILES_DIRS = [BASE_DIR / "src" / "assets"]
+#     MEDIA_URL = '/media/'
+#     MEDIA_ROOT = BASE_DIR / 'media'
+
+# Statik va media fayllar konfiguratsiyasi
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [BASE_DIR / "src" / "assets"]
+
+if ENVIRONMENT == "production":
+    # Ishlab chiqarish muhitida
+    STATIC_ROOT = BASE_DIR / "staticfiles"
+else:
+    # Lokal muhitda collectstatic ishlatilmasdan
+    STATICFILES_DIRS = [BASE_DIR / "src" / "assets"]
 
 # Media fayllar uchun sozlamalar
 MEDIA_URL = '/media/'
@@ -200,18 +227,13 @@ CSRF_COOKIE_SECURE = True
 
 
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
-SESSION_COOKIE_SECURE = False
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
-SESSION_COOKIE_AGE = 3600
-SECURE_SSL_REDIRECT = True  # HTTP so'rovlarni avtomatik HTTPS ga yo'naltirish
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')  # Reverse proxy orqali HTTPS sozlash
 SECURE_HSTS_SECONDS = 31536000  # HSTPSTS (HT Strict Transport Security) faollashtirish
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Subdomenlarga ham HSTS
 SECURE_HSTS_PRELOAD = True  # HSTS preload ro'yxatiga qo'shish
 SECURE_CONTENT_TYPE_NOSNIFF = True  # Xavfsizlik uchun MIME turi tekshiruvi
 SECURE_BROWSER_XSS_FILTER = True  # XSS hujumlariga qarshi himoya
-CSRF_COOKIE_SECURE = True  # CSRF cookie faqat HTTPS orqali ishlaydi
 
 
 CSRF_TRUSTED_ORIGINS = [

@@ -26,21 +26,15 @@ class LoginView(AuthView):
 @method_decorator(csrf_exempt, name='dispatch')
 class DjangoAuthLoginView(View):
     def post(self, request):
-        print("POST so'rov qabul qilindi.")  # Debugging
-
         try:
-            # JSON ma'lumotlarni o'qish
             data = json.loads(request.body)
             login_input = data.get("login_input")
             password = data.get("password")
 
             if not login_input or not password:
-                print("Login yoki parol kiritilmagan.")  # Debugging
                 return JsonResponse({"error": "Login yoki parol kiritilishi shart."}, status=400)
 
-            print(f"Kirish uchun kiritilgan ma'lumotlar: input={login_input}, password=****")  # Debugging
-
-            # Login ma'lumotining turini aniqlash
+            # Identify login type
             email_regex = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
             phone_regex = r'^998\d{9}$'
 
@@ -51,9 +45,7 @@ class DjangoAuthLoginView(View):
             else:
                 login_field = 'username'
 
-            print(f"Aniqlangan login maydoni: {login_field}")  # Debugging
-
-            # Foydalanuvchini olish
+            # Get user
             if login_field == 'email':
                 user = CustomUser.objects.get(email=login_input)
             elif login_field == 'phone_number':
@@ -61,35 +53,27 @@ class DjangoAuthLoginView(View):
             else:
                 user = CustomUser.objects.get(username=login_input)
 
-            # Foydalanuvchini autentifikatsiya qilish
+            # Authenticate user
             user = authenticate(request, username=user.username, password=password)
             if user is not None:
-                print(f"Foydalanuvchi autentifikatsiya qilindi: {user}")  # Debugging
-
                 login(request, user)
-                print("Foydalanuvchi sessiyaga kiritildi.")  # Debugging
 
-                # UserActivity log yaratish
-                UserActivity.objects.create(
-                    user=user,
-                    login_time=timezone.now()
-                )
-                print("UserActivity log yaratildi.")  # Debugging
+                # Log user activity
+                UserActivity.objects.create(user=user, login_time=timezone.now())
+
+                # Set session flags for notification
+                request.session['last_login'] = user.last_login.strftime('%Y-%m-%d %H:%M:%S') if user.last_login else 'Bu foydalanuvchining birinchi kirishi'
+                request.session['show_login_toastr'] = True
 
                 return JsonResponse({"message": "Muvaffaqiyatli tizimga kirdingiz."}, status=200)
 
-            else:
-                print("Autentifikatsiya muvaffaqiyatsiz.")  # Debugging
-                return JsonResponse({"error": "Login yoki parol noto'g'ri."}, status=401)
+            return JsonResponse({"error": "Login yoki parol noto'g'ri."}, status=401)
 
         except CustomUser.DoesNotExist:
-            print("Foydalanuvchi topilmadi.")  # Debugging
             return JsonResponse({"error": "Login yoki parol noto'g'ri."}, status=401)
 
         except json.JSONDecodeError:
-            print("JSON ma'lumotlar noto'g'ri.")  # Debugging
             return JsonResponse({"error": "Noto'g'ri so'rov ma'lumotlari."}, status=400)
 
         except Exception as e:
-            print(f"Xatolik yuz berdi: {str(e)}")  # Debugging
             return JsonResponse({"error": "Ichki xatolik yuz berdi."}, status=500)

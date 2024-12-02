@@ -1,8 +1,7 @@
 from django.urls import path
 
 from config.decorators import verified_required
-from .views import TableView, waiting_view
-
+from .views import TableView, waiting_view, clear_toastr_session
 
 urlpatterns = [
     path(
@@ -35,6 +34,7 @@ urlpatterns = [
         verified_required(TableView.as_view(template_name="main_page.html")),
         name="main-page-administrator",
     ),
+    path('clear-toastr-session/', clear_toastr_session, name='clear_toastr_session'),
     # Waiting page
     path("waiting/", waiting_view, name="waiting"),
 ]

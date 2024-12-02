@@ -1,3 +1,5 @@
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from web_project import TemplateLayout
 from django.shortcuts import render
@@ -18,3 +20,13 @@ def waiting_view(request):
     View for users waiting for admin verification.
     """
     return render(request, "waiting.html", {"user": request.user})
+
+@csrf_exempt
+def clear_toastr_session(request):
+    """
+    Toastr sessiya qiymatlarini tozalash.
+    """
+    if request.method == "POST":
+        request.session.pop('show_login_toastr', None)
+        return JsonResponse({"status": "success"})
+    return JsonResponse({"status": "failed"}, status=400)

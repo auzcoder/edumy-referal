@@ -1,4 +1,4 @@
-#!/home/ulkanov/Documents/GitHub/edumy-referal/venv/bin/python
+#!/home/ulkanov/Documents/GitHub/edumy-referal/venv/bin/python3.12
 # -*- coding: utf-8 -*-
 import re
 import sys

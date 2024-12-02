@@ -121,7 +121,8 @@ $(document).ready(function() {
                     <h5 class="mb-0 text-primary">${center.center_name}</h5>
                     <span class="badge bg-primary">Filiallar: ${center.filials_count}</span>
                   </div>
-                  <p class="mt-2"><strong>Admin:</strong> ${center.admin_name}</p>
+                  <p class="mt-2"><strong>Markaz rahbari:</strong> ${center.admin_name}</p>
+                  <p class="mt-2"><strong>Markaz rahbari ismi:</strong> ${center.admin_first_name} ${<center className="admin_last_name"></center>}</p>
                   <p class="mb-2"><strong>Telefon:</strong> ${center.admin_phone}</p>
                   <div class="d-flex gap-2">
                     <button class="btn btn-sm btn-outline-info d-flex align-items-center gap-1" onclick="viewDetails(${center.center_id})">

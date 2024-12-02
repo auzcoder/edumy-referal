@@ -218,7 +218,7 @@
                         this.messages = [{ type: "success", text: data.message || "Muvaffaqiyatli tizimga kirildi!" }];
                         setTimeout(() => {
                             window.location.href = "{% url 'main-page-administrator' %}"; // Tizimga kiritilgandan so'ng sahifaga o'tish
-                        }, 1500);
+                        }, 1);
                     })
                     .catch((error) => {
                         this.messages = [{ type: "error", text: error.message || "Login yoki parol noto'g'ri." }];

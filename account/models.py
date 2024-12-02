@@ -34,7 +34,16 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser is_superuser=True bo‘lishi kerak.')
 
-        return self._create_user(email, password, **extra_fields)
+        # `first_name`, `last_name`, va `now_role`ni foydalanuvchidan so'rash
+        first_name = input("Iltimos, ismni kiriting: ")
+        second_name = input("Iltimos, familiyani kiriting: ")
+        now_role = input("Hozirgi roli (default: '6'): ") or "6"
+
+        extra_fields.update({
+            'first_name': first_name,
+            'second_name': second_name,
+            'now_role': now_role,
+        })
 
 
 class Gender(models.Model):
