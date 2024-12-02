@@ -25,16 +25,16 @@ class CustomUserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
     def create_superuser(self, email, password=None, **extra_fields):
-        """Berilgan email va parol bilan SuperUser yaratib saqlash."""
+        """Superuserni yaratish uchun qo'shimcha ma'lumotlarni so'raydi."""
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
         if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser is_staff=True bo‘lishi kerak.')
+            raise ValueError('Superuser uchun is_staff=True bo‘lishi kerak.')
         if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser is_superuser=True bo‘lishi kerak.')
+            raise ValueError('Superuser uchun is_superuser=True bo‘lishi kerak.')
 
-        # `first_name`, `last_name`, va `now_role`ni foydalanuvchidan so'rash
+        # Qo'shimcha maydonlarni foydalanuvchidan so'rash
         first_name = input("Iltimos, ismni kiriting: ")
         second_name = input("Iltimos, familiyani kiriting: ")
         now_role = input("Hozirgi roli (default: '6'): ") or "6"
@@ -44,6 +44,9 @@ class CustomUserManager(BaseUserManager):
             'second_name': second_name,
             'now_role': now_role,
         })
+
+        return self._create_user(email, password, **extra_fields)
+
 
 
 class Gender(models.Model):
@@ -125,7 +128,7 @@ class CustomUser(AbstractUser):
     user_type = models.CharField(_('Type'), choices=type_choice, default="1", max_length=20, blank=True, null=True)
 
     roles = models.ManyToManyField('Roles', blank=True, verbose_name="Roles")
-    now_role = models.CharField(null=True, blank=True, max_length=255, verbose_name="Foydalanuvchining hozirgi vaqtdagi roli")
+    now_role = models.CharField(null=True, blank=True, max_length=255, verbose_name="Foydalanuvchining hozirgi vaqtdagi roli", default="6")
 
     is_active = models.BooleanField(default=True)
 
@@ -145,6 +148,8 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username or self.phone_number or self.first_name
+
+    objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'  # Users log in with their email
     REQUIRED_FIELDS = ['username']

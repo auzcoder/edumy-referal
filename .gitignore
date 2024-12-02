@@ -1,15 +1,15 @@
 # Python compiled files and cache directories
 __pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
 
-# Byte-compiled / optimized / DLL files
+# Exclude pycache in all subdirectories
+*/__pycache__/
+**/__pycache__/
 *.pyc
 *.pyo
 *.pyd
-
-# Exclude pycache in all subdirectories
-**/__pycache__/
 
 # Django log and temporary files
 *.log
@@ -23,6 +23,7 @@ local_settings.py
 env/
 ENV/
 env.bak/
+venv/
 venv.bak/
 
 # Static and media files (Django-generated)
