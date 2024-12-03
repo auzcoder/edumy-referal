@@ -66,6 +66,8 @@ class AddAdministratorView(View):
             gender = male_gender if second_name.endswith("v") else female_gender if second_name.endswith(
                 "va") else None
 
+            print(roles)
+
             if not gender:
                 return JsonResponse({'success': False, 'message': 'Jinsni aniqlashda xatolik yuz berdi!'})
 

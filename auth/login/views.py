@@ -31,49 +31,59 @@ class DjangoAuthLoginView(View):
             login_input = data.get("login_input")
             password = data.get("password")
 
+            print(f"Kelgan ma'lumotlar: login_input={login_input}, password=****")
+
             if not login_input or not password:
+                print("Xatolik: Login yoki parol kiritilmagan.")
                 return JsonResponse({"error": "Login yoki parol kiritilishi shart."}, status=400)
 
-            # Identify login type
+            # Telefon raqamni formatlash
+            if login_input.startswith("+998"):
+                login_input = login_input.replace("+998", "998").replace(" ", "")
+                print(f"Telefon raqam formatlandi: {login_input}")
+            elif login_input.startswith("998"):
+                login_input = login_input.replace(" ", "")
+                print(f"Telefon raqam formatlandi: {login_input}")
+
+            # Login turini aniqlash: email yoki username
             email_regex = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
-            phone_regex = r'^998\d{9}$'
+            login_field = 'email' if re.match(email_regex, login_input) else 'username'
+            print(f"Aniqlangan login turi: {login_field}")
 
-            if re.match(email_regex, login_input):
-                login_field = 'email'
-            elif re.match(phone_regex, login_input):
-                login_field = 'phone_number'
-            else:
-                login_field = 'username'
-
-            # Get user
+            # Foydalanuvchini olish
+            user = None
             if login_field == 'email':
-                user = CustomUser.objects.get(email=login_input)
-            elif login_field == 'phone_number':
-                user = CustomUser.objects.get(phone_number=login_input)
+                user = CustomUser.objects.filter(email=login_input).first()
             else:
-                user = CustomUser.objects.get(username=login_input)
+                user = CustomUser.objects.filter(username=login_input).first()
 
-            # Authenticate user
-            user = authenticate(request, username=user.username, password=password)
-            if user is not None:
-                login(request, user)
+            if not user:
+                print(f"Xatolik: Foydalanuvchi topilmadi: {login_input}")
+                return JsonResponse({"error": "Login yoki parol noto'g'ri."}, status=401)
 
-                # Log user activity
-                UserActivity.objects.create(user=user, login_time=timezone.now())
+            print(f"Foydalanuvchi topildi: {user}")
 
-                # Set session flags for notification
-                request.session['last_login'] = user.last_login.strftime('%Y-%m-%d %H:%M:%S') if user.last_login else 'Bu foydalanuvchining birinchi kirishi'
-                request.session['show_login_toastr'] = True
+            # Foydalanuvchini autentifikatsiya qilish
+            authenticated_user = authenticate(request, username=user.username, password=password)
+            if authenticated_user:
+                print(f"Autentifikatsiya muvaffaqiyatli: {authenticated_user}")
+
+                login(request, authenticated_user)
+
+                # Foydalanuvchi faoliyatini logga yozish
+                # UserActivity modeli qo'shish talab qilinadi
+                # UserActivity.objects.create(user=authenticated_user, login_time=timezone.now())
+                print("Foydalanuvchi tizimga kiritildi.")
 
                 return JsonResponse({"message": "Muvaffaqiyatli tizimga kirdingiz."}, status=200)
 
-            return JsonResponse({"error": "Login yoki parol noto'g'ri."}, status=401)
-
-        except CustomUser.DoesNotExist:
+            print("Xatolik: Login yoki parol noto'g'ri.")
             return JsonResponse({"error": "Login yoki parol noto'g'ri."}, status=401)
 
         except json.JSONDecodeError:
+            print("Xatolik: JSON ma'lumotlari noto'g'ri.")
             return JsonResponse({"error": "Noto'g'ri so'rov ma'lumotlari."}, status=400)
 
         except Exception as e:
-            return JsonResponse({"error": "Ichki xatolik yuz berdi."}, status=500)
+            print(f"Ichki xatolik yuz berdi: {str(e)}")
+            return JsonResponse({"error": f"Ichki xatolik yuz berdi: {str(e)}"}, status=500)
