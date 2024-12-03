@@ -13,7 +13,7 @@ except ImportError:
 
 class Center(models.Model):
     nomi = models.CharField(max_length=255, null=True, blank=True, verbose_name="Markaz nomi")
-    rahbari = models.ForeignKey(CustomUser, on_delete=models.CASCADE, max_length=100, null=True, blank=True, verbose_name="Rahbari")
+    rahbari = models.ForeignKey("account.CustomUser", on_delete=models.CASCADE, max_length=100, null=True, blank=True, verbose_name="Rahbari")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Yaratilgan vaqti")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="O'zgartirilgan vaqti")
     is_active = models.BooleanField(default=True, verbose_name="Faolmi")
@@ -97,10 +97,25 @@ class E_groups(models.Model):
     )
 
     group_name = models.CharField(max_length=255, verbose_name="Guruh nomi")
-    kurs = models.ForeignKey('center.Kurs', on_delete=models.CASCADE, related_name='groups', verbose_name="Kurs")
-    days_of_week = JSONField(verbose_name="Dars kunlari", help_text="Hafta kunlarini tanlang", default=list, blank=True)
-
-    students = models.ManyToManyField(CustomUser, through='GroupMembership', related_name='student_groups', verbose_name="O'quvchilar")
+    kurs = models.ForeignKey(
+        'center.Kurs',
+        on_delete=models.CASCADE,
+        related_name='groups',
+        verbose_name="Kurs"
+    )
+    days_of_week = JSONField(
+        verbose_name="Dars kunlari",
+        help_text="Hafta kunlarini tanlang",
+        default=list,
+        blank=True
+    )
+    # Many-to-ManyField with through argument
+    students = models.ManyToManyField(
+        'account.CustomUser',
+        through='GroupMembership',
+        related_name='student_groups',
+        verbose_name="O'quvchilar"
+    )
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Yaratilgan vaqti")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="O'zgartirilgan vaqti")
@@ -114,8 +129,16 @@ class E_groups(models.Model):
 
 
 class GroupMembership(models.Model):
-    group = models.ForeignKey(E_groups, on_delete=models.CASCADE, verbose_name="Guruh")
-    student = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name="O'quvchi")
+    group = models.ForeignKey(
+        "center.E_groups",  # 'to' parametridan foydalanildi
+        on_delete=models.CASCADE,
+        verbose_name="Guruh"
+    )
+    student = models.ForeignKey(
+        "account.CustomUser",  # 'to' parametridan foydalanildi
+        on_delete=models.CASCADE,
+        verbose_name="O'quvchi"
+    )
     is_active = models.BooleanField(default=True, verbose_name="Faolmi")
 
     joined_at = models.DateTimeField(auto_now_add=True, verbose_name="Guruhga qo'shilgan vaqti")

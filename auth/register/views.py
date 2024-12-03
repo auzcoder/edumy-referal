@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -23,9 +24,9 @@ class RegisterView(View):
             # Foydalanuvchidan kelgan ma'lumotlarni olish
             first_name = data.get("first_name")
             last_name = data.get("last_name")
-            phone_number_raw = data.get("phone_number")  # Foydalanuvchidan kelgan telefon raqam
-            phone_number = phone_number_raw.replace(" ", "").replace("+", "")  # Telefon raqamni formatlash (username uchun)
-            email = f"{phone_number}@info.uz"  # Emailni telefon raqamdan hosil qilish
+            phone_number_raw = data.get("phone_number")
+            phone_number = phone_number_raw.replace(" ", "").replace("+", "")
+            email = f"{phone_number}@info.uz"
             password = data.get("password")
             region = data.get("region")
             district = data.get("district")
@@ -44,69 +45,39 @@ class RegisterView(View):
                 print(f"Xatolik: Telefon raqami ({phone_number_raw}) allaqachon mavjud.")
                 return JsonResponse({"error": "Bu telefon raqami bilan foydalanuvchi allaqachon mavjud."}, status=400)
 
-            # Region, district va maktab obyektlarini olish yoki bo'sh qilib qoldirish
-            region_obj = None
-            district_obj = None
-            school_obj = None
-
-            if region:
-                try:
-                    region_obj = Regions.objects.get(name=region)
-                    print(f"Topilgan region: {region_obj}")
-                except Regions.DoesNotExist:
-                    print("Viloyat topilmadi. Foydalanuvchi uchun viloyat bo'sh qoldirildi.")
-
-            if district:
-                try:
-                    district_obj = District.objects.get(name=district)
-                    print(f"Topilgan district: {district_obj}")
-                except District.DoesNotExist:
-                    print("Tuman topilmadi. Foydalanuvchi uchun tuman bo'sh qoldirildi.")
-
-            if school_id:
-                try:
-                    school_obj = Maktab.objects.get(id=school_id)
-                    print(f"Topilgan maktab: {school_obj}")
-                except Maktab.DoesNotExist:
-                    print("Maktab topilmadi. Foydalanuvchi uchun maktab bo'sh qoldirildi.")
+            # Region, district va maktab obyektlarini olish
+            region_obj = Regions.objects.filter(name=region).first()
+            district_obj = District.objects.filter(name=district).first()
+            school_obj = Maktab.objects.filter(id=school_id).first()
 
             # Familiya bo'yicha jinsni aniqlash
-            gender_obj = None
-            if last_name.lower().endswith("va"):
-                gender_name = "Ayol"
-            else:
-                gender_name = "Erkak"
+            gender_name = "Ayol" if last_name.lower().endswith("va") else "Erkak"
+            gender_obj = Gender.objects.filter(name=gender_name).first()
 
-            try:
-                gender_obj = Gender.objects.get(name=gender_name)
-                print(f"Topilgan jins: {gender_obj}")
-            except Gender.DoesNotExist:
-                print(f"Jins topilmadi: {gender_name}.")
-                return JsonResponse({"error": f"{gender_name} jinsi mavjud emas."}, status=500)
+            if not gender_obj:
+                return JsonResponse({"error": f"{gender_name} jinsi mavjud emas."}, status=400)
 
             # Role modeli orqali "O'qituvchi" rolini olish
-            try:
-                teacher_role = Roles.objects.get(code="2")  # Code "2" is used for "O'qituvchi"
-                print(f"Topilgan rol: {teacher_role}")
-            except Roles.DoesNotExist:
-                return JsonResponse({"error": "O'qituvchi roli mavjud emas."}, status=500)
+            teacher_role = Roles.objects.filter(code="2").first()
+            if not teacher_role:
+                return JsonResponse({"error": "O'qituvchi roli mavjud emas."}, status=400)
 
             # Foydalanuvchini yaratish
             print("Foydalanuvchi yaratilyapti...")
             user = User.objects.create_user(
-                username=phone_number,  # Username uchun formatlangan raqam
-                email=email,  # Telefon raqamdan hosil qilingan email
+                username=phone_number,
+                email=email,
                 first_name=first_name,
                 second_name=last_name,
-                phone_number=phone_number_raw,  # Telefon raqami to'liq formatda saqlanadi
+                phone_number=phone_number_raw,
                 password=password,
-                password_save=password,  # Parolni matn holida saqlash
-                user_type="2",  # O'qituvchi user_type
-                regions=region_obj,  # Region obyektini qo'shish yoki None
-                district=district_obj,  # District obyektini qo'shish yoki None
-                maktab=school_obj,  # Maktab obyektini qo'shish yoki None
-                gender=gender_obj,  # Gender obyektini biriktirish
-                now_role="2",  # `now_role`ga avtomatik "O'qituvchi" ni key ni o'rnatish
+                password_save=password,
+                user_type="2",
+                regions=region_obj,
+                district=district_obj,
+                maktab=school_obj,
+                gender=gender_obj,
+                now_role="2",
             )
 
             # Foydalanuvchiga "O'qituvchi" rolini bog'lash
@@ -115,21 +86,22 @@ class RegisterView(View):
             print(f"Foydalanuvchi yaratildi va roli bog'landi: {user}")
 
             # Foydalanuvchini autentifikatsiya qilish
-            print("Foydalanuvchini autentifikatsiya qilish...")
             authenticated_user = authenticate(username=phone_number, password=password)
-
             if authenticated_user:
-                print(f"Autentifikatsiya muvaffaqiyatli: {authenticated_user}")
-                # Foydalanuvchini tizimga kiritish
                 login(request, authenticated_user)
                 print("Foydalanuvchi tizimga kiritildi.")
-                # Kerakli URL'ga yo'naltirish
-                return redirect("main-page-administrator")  # Kerakli URL'ga yo'naltirish
+
+                # Javobda redirect URL'ni qaytarish
+                return JsonResponse({
+                    "message": "Foydalanuvchi muvaffaqiyatli yaratildi.",
+                    "redirect_url": reverse("main-page-administrator"),
+                }, status=200)
             else:
                 print("Xatolik: Autentifikatsiya amalga oshmadi.")
                 return JsonResponse({"error": "Autentifikatsiya amalga oshmadi."}, status=400)
 
         except Exception as e:
-            print("Server xatosi:", e)  # Debug uchun log
+            print("Server xatosi:", e)
             return JsonResponse({"error": f"Server xatosi: {str(e)}"}, status=500)
+
 
