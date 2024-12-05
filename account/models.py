@@ -146,6 +146,7 @@ class CustomUser(AbstractUser):
 
     maktab = models.ForeignKey('school.Maktab', on_delete=models.SET_NULL, verbose_name="Maktab", null=True, blank=True)
 
+    added_by = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,related_name='created_users',verbose_name="Qo'shgan foydalanuvchi")
     def __str__(self):
         return self.username or self.phone_number or self.first_name
 

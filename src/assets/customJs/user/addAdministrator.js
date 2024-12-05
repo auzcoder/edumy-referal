@@ -111,7 +111,7 @@ $(document).ready(function() {
       dom: '<"d-flex justify-content-between align-items-center mb-4"B>t', // Faqat jadval va tugmalar
       buttons: [
         {
-          text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Yangi Admin Qo‘shish</span>',
+          text: '<i class="ti ti-plus me-0 me-sm-1 ti-xs"></i><span class="d-none d-sm-inline-block">Yangi Foydalanuvchi Qo‘shish</span>',
           className: 'btn btn-primary ms-2 ms-sm-0 waves-effect waves-light',
           action: function() {
             window.location.href = '/user/addAdministrators/'; // Yangi administrator qo'shish sahifasiga yo'naltirish
@@ -131,7 +131,7 @@ $('#filter-role').on('change', function() {
     // Ko‘rish tugmachasi
     dt_admins_table.on('click', '.view-details', function() {
       var adminId = $(this).data('id');
-      alert('Administrator ID: ' + adminId);
+      window.location.href = "/user/user-details/" + adminId + "/";
     });
 
     // O‘chirish tugmachasi
