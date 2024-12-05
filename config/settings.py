@@ -14,7 +14,7 @@ SECRET_KEY = config('SECRET_KEY', default='fallback-secret-key')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", "ref.edumy.uz", ".ref.edumy.uz"]
+ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", "ref.edumy.uz"]
 
 ENVIRONMENT = config('DJANGO_ENVIRONMENT', default='local')
 
@@ -229,6 +229,9 @@ CSRF_COOKIE_SECURE = True
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
+
+SESSION_COOKIE_AGE = 3600
+
 SECURE_HSTS_SECONDS = 31536000  # HSTPSTS (HT Strict Transport Security) faollashtirish
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Subdomenlarga ham HSTS
 SECURE_HSTS_PRELOAD = True  # HSTS preload ro'yxatiga qo'shish
