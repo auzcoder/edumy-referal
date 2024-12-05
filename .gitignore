@@ -18,8 +18,8 @@ local_settings.py
 *.sqlite3-journal
 
 # Virtual environment directories
-.env
-.venv
+.env/
+.venv/
 env/
 ENV/
 env.bak/
@@ -27,6 +27,7 @@ venv/
 venv.bak/
 
 # Static and media files (Django-generated)
+static/
 staticfiles/
 media/
 
@@ -80,3 +81,44 @@ Thumbs.db
 ehthumbs.db
 Icon?
 Desktop.ini
+
+# Node.js files (if applicable)
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.pnpm-debug.log
+
+# Build files
+dist/
+build/
+*.tar.gz
+*.zip
+*.whl
+*.pyc
+*.pyo
+*.pyd
+
+# Celery worker logs and PID files
+celerybeat-schedule
+celerybeat.pid
+
+# Gunicorn logs and PID files
+gunicorn.pid
+gunicorn.error.log
+gunicorn.access.log
+
+# Other temporary or local files
+*.swp
+*.swo
+*.bak
+*.tmp
+*.old
+*.orig
+
+# Lock files and backups
+*.lock
+*.bak
+*.backup
+*.swp
+*.tmp

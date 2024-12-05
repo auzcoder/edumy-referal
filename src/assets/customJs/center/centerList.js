@@ -1,4 +1,4 @@
-$(document).ready(function() {
+ $(document).ready(function() {
   // Toastr configuration
   toastr.options = {
     closeButton: true,
@@ -113,38 +113,40 @@ $(document).ready(function() {
         centersContainer.empty();
 
         if (response.success) {
-          if (response.data.length > 0) {
-            response.data.forEach((center) => {
-              const centerCard = `
-                <div class="card p-3 mb-4 shadow-sm border">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 text-primary">${center.center_name}</h5>
-                    <span class="badge bg-primary">Filiallar: ${center.filials_count}</span>
-                  </div>
-                  <p class="mt-2"><strong>Markaz rahbari:</strong> ${center.admin_name}</p>
-                  <p class="mt-2"><strong>Markaz rahbari ismi:</strong> ${center.admin_first_name} ${<center className="admin_last_name"></center>}</p>
-                  <p class="mb-2"><strong>Telefon:</strong> ${center.admin_phone}</p>
-                  <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-outline-info d-flex align-items-center gap-1" onclick="viewDetails(${center.center_id})">
-                      <i class="ti ti-eye"></i> Ko'proq
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1" onclick="deleteCenter(${center.center_id})">
-                      <i class="ti ti-trash"></i> O'chirish
-                    </button>
-                    <button class="btn btn-sm btn-outline-success d-flex align-items-center gap-1" onclick="openAddFilialModal(${center.center_id})">
-                      <i class="ti ti-plus"></i> Fillial qo'shish
-                    </button>
-                  </div>
-                </div>
-              `;
-              centersContainer.append(centerCard);
-            });
-          } else {
-            centersContainer.append('<p class="text-muted fs-4">Mavjud o‘quv markazlari yo‘q</p>');
-          }
-        } else {
+  if (response.data.length > 0) {
+    response.data.forEach((center) => {
+      const centerCard = `
+        <div class="card p-3 mb-4 shadow-sm border">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 text-primary">${center.center_name}</h5>
+            <span class="badge bg-primary">Filiallar: ${center.filials_count}</span>
+          </div>
+          <p class="mt-2"><strong>Markaz rahbari:</strong> ${center.admin_name}</p>
+          <p class="mt-2"><strong>Markaz rahbari ismi:</strong> ${center.admin_first_name} ${center.admin_last_name}</p>
+          <p class="mb-2"><strong>Telefon:</strong> ${center.admin_phone}</p>
+          <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-info d-flex align-items-center gap-1" onclick="viewDetails(${center.center_id})">
+              <i class="ti ti-eye"></i> Ko'proq
+            </button>
+            <button class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1" onclick="deleteCenter(${center.center_id})">
+              <i class="ti ti-trash"></i> O'chirish
+            </button>
+            <button class="btn btn-sm btn-outline-success d-flex align-items-center gap-1" onclick="openAddFilialModal(${center.center_id})">
+              <i class="ti ti-plus"></i> Fillial qo'shish
+            </button>
+          </div>
+        </div>
+      `;
+      centersContainer.append(centerCard);
+    });
+  } else {
+    centersContainer.append('<p class="text-muted fs-4">Mavjud o‘quv markazlari yo‘q</p>');
+  }
+} else {
           toastr.error(response.message || 'Markaz ma‘lumotlarini yuklashda xatolik yuz berdi.', 'Xatolik');
         }
+
+
       },
       null
     );
