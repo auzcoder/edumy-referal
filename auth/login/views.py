@@ -68,11 +68,13 @@ class DjangoAuthLoginView(View):
             if authenticated_user:
                 print(f"Autentifikatsiya muvaffaqiyatli: {authenticated_user}")
 
+                # Login qilish
                 login(request, authenticated_user)
 
                 # Foydalanuvchi faoliyatini logga yozish
-                # UserActivity modeli qo'shish talab qilinadi
-                # UserActivity.objects.create(user=authenticated_user, login_time=timezone.now())
+                # UserActivity modeliga yangi yozuv qo'shish
+                UserActivity.objects.create(user=authenticated_user, login_time=timezone.now())
+
                 print("Foydalanuvchi tizimga kiritildi.")
 
                 return JsonResponse({"message": "Muvaffaqiyatli tizimga kirdingiz."}, status=200)

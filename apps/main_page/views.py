@@ -15,12 +15,6 @@ class TableView(TemplateView):
         return context
 
 
-def waiting_view(request):
-    """
-    View for users waiting for admin verification.
-    """
-    return render(request, "waiting.html", {"user": request.user})
-
 @csrf_exempt
 def clear_toastr_session(request):
     """

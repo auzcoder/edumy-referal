@@ -138,7 +138,7 @@ class E_groupsAdmin(admin.ModelAdmin):
 class SubmittedStudentAdmin(admin.ModelAdmin):
     # Jadvalda ko'rinadigan ustunlar
     list_display = (
-        'first_name', 'last_name', 'sinf', 'belgisi',
+        'first_name', 'last_name', 'phone_number', 'sinf', 'belgisi',
         'kasb', 'yonalish', 'status', 'created_at', 'added_by'
     )
 
@@ -149,7 +149,9 @@ class SubmittedStudentAdmin(admin.ModelAdmin):
     )
 
     # Qidiruv maydonlari
-    search_fields = ('first_name', 'last_name', 'belgisi', 'kasb__nomi', 'yonalish__nomi')
+    search_fields = (
+        'first_name', 'last_name', 'belgisi', 'kasb__nomi', 'yonalish__nomi', 'phone_number'
+    )
 
     # Inline tahrirlash imkoniyatlari
     list_editable = ('status',)
@@ -180,7 +182,7 @@ class SubmittedStudentAdmin(admin.ModelAdmin):
     # Forma tahriri
     fieldsets = (
         ('Shaxsiy ma’lumotlar', {
-            'fields': ('first_name', 'last_name', 'belgisi')
+            'fields': ('first_name', 'last_name', 'phone_number', 'belgisi')
         }),
         ('Bog‘langan ma’lumotlar', {
             'fields': ('sinf', 'kasb', 'yonalish')

@@ -91,7 +91,9 @@ class AddAdministratorView(View):
                 now_role=str(roles),
                 quarters=quarter,
                 gender=gender, # Set the now_role field
-                user_type=roles  # Save as CEO_Administrator in user_type
+                user_type=roles,  # Save as CEO_Administrator in user_type
+                added_by = request.user  # Qo'shgan foydalanuvchini saqlash
+
             )
             print("Created" + roles)
 

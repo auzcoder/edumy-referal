@@ -34,6 +34,9 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser uchun is_superuser=True bo‘lishi kerak.')
 
+        # Foydalanuvchi yaratishdan oldin user_type ni "6" (SuperAdmin) qilib o'rnatamiz
+        extra_fields.setdefault('user_type', '6')
+
         # Qo'shimcha maydonlarni foydalanuvchidan so'rash
         first_name = input("Iltimos, ismni kiriting: ")
         second_name = input("Iltimos, familiyani kiriting: ")
@@ -97,6 +100,7 @@ class CustomUser(AbstractUser):
         ("3", "Direktor"),
         ("4", "Administrator"),
         ("5", "CEO_Administrator"),
+        ("6", "SuperAdmin"),
     )
     first_name = models.CharField(null=True, blank=True, max_length=255, verbose_name="Ism")
     second_name = models.CharField(null=True, blank=True, max_length=255, verbose_name="Familia")
@@ -145,7 +149,9 @@ class CustomUser(AbstractUser):
     is_verified = models.BooleanField(default=False, verbose_name="Tasdiqlangan")
 
     maktab = models.ForeignKey('school.Maktab', on_delete=models.SET_NULL, verbose_name="Maktab", null=True, blank=True)
+    sinf = models.ForeignKey('school.Sinf', on_delete=models.SET_NULL, verbose_name="Sinf", null=True, blank=True)
 
+    added_by = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,related_name='created_users',verbose_name="Qo'shgan foydalanuvchi")
     def __str__(self):
         return self.username or self.phone_number or self.first_name
 

@@ -1,7 +1,10 @@
+from django.db.models import Q
 from django.http import JsonResponse
 from django.views import View
 from account.models import CustomUser
+from center.models import Center, Filial
 
+from django.db.models import Q
 
 class GetAdministratorsView(View):
     def get(self, request, *args, **kwargs):
@@ -11,9 +14,29 @@ class GetAdministratorsView(View):
             filter_status = request.GET.get('filterStatus', '').strip()
             filter_role = request.GET.get('filterRole', '').strip()
 
-            # Foydalanuvchilarni filtrlash
+            # Foydalanuvchini aniqlash
+            current_user = request.user
 
-            administrators = CustomUser.objects.all()
+            # Barcha foydalanuvchilarni olish
+            administrators = CustomUser.objects.filter(is_active=True)
+
+            if current_user.now_role == "6":
+                # Superadmin bo'lsa barcha foydalanuvchilarni yuborish
+                pass
+            else:
+                # Foydalanuvchiga bog'langan markaz va filial ma'lumotlarini olish
+                user_centers = Center.objects.filter(rahbari=current_user)
+                user_filials = Filial.objects.filter(center__in=user_centers)
+
+                # Filtrlar
+                administrators = administrators.filter(
+                    Q(added_by=current_user) |  # Foydalanuvchi tomonidan kiritilganlar
+                    Q(user_type__in=["2", "3"]) |  # O'qituvchilar va Direktorlar
+                    Q(administered_filials__in=user_filials) |  # Foydalanuvchi filiallariga birikkanlar
+                    Q(administered_filials__center__in=user_centers)  # Foydalanuvchi markaziga birikkanlar
+                ).distinct()
+
+            # Qo'shimcha filtrlash
             if filter_role:
                 administrators = administrators.filter(user_type=filter_role)
             if search_name:
@@ -63,6 +86,7 @@ class GetAdministratorsView(View):
 
         except Exception as e:
             return JsonResponse({'success': False, 'message': f'Xatolik yuz berdi: {str(e)}'})
+
 
 
 class GetAdminsView(View):

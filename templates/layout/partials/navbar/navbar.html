@@ -44,16 +44,16 @@
 
       <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
         {% if not menu_horizontal %}
-        <!-- Search -->
-        <div class="navbar-nav align-items-center">
-          <div class="nav-item navbar-search-wrapper mb-0">
-            <a class="nav-item nav-link search-toggler d-flex align-items-center px-0" href="javascript:void(0);">
-              <i class="ti ti-search ti-md me-2 me-lg-4 ti-lg"></i>
-              <span class="d-none d-md-inline-block text-muted fw-normal">Search (Ctrl+/)</span>
-            </a>
-          </div>
-        </div>
-        <!-- /Search -->
+{#        <!-- Search -->#}
+{#        <div class="navbar-nav align-items-center">#}
+{#          <div class="nav-item navbar-search-wrapper mb-0">#}
+{#            <a class="nav-item nav-link search-toggler d-flex align-items-center px-0" href="javascript:void(0);">#}
+{#              <i class="ti ti-search ti-md me-2 me-lg-4 ti-lg"></i>#}
+{#              <span class="d-none d-md-inline-block text-muted fw-normal">Search (Ctrl+/)</span>#}
+{#            </a>#}
+{#          </div>#}
+{#        </div>#}
+{#        <!-- /Search -->#}
         {% endif %}
         <ul class="navbar-nav flex-row align-items-center ms-auto">
           <!--/ Language -->
@@ -355,28 +355,34 @@
                 <div class="dropdown-divider my-1 mx-n2"></div>
               </li>
               <li>
+              {% if request.user.now_role == "5" %}
                 <a class="dropdown-item {% if request.resolver_match.url_name == 'main-administrator' %}active{% endif %}" href="{% url 'main-administrator' %}">
                   <i class="ti ti-shield-half me-3 ti-md"></i><span class="align-middle">Administrator | CEO</span>
                 </a>
+              {% elif request.user.now_role == "4" %}
                 <a class="dropdown-item {% if request.resolver_match.url_name == 'main-manager' %}active{% endif %}" href="{% url 'main-manager' %}">
                   <i class="ti ti-user-cog me-3 ti-md"></i><span class="align-middle">Menejer</span>
                 </a>
+              {% elif request.user.now_role == "3" %}
                 <a class="dropdown-item {% if request.resolver_match.url_name == 'main-director' %}active{% endif %}" href="{% url 'main-director' %}">
                   <i class="ti ti-user-up me-3 ti-md"></i><span class="align-middle">Direktor</span>
                 </a>
+              {% elif request.user.now_role == "2" %}
                 <a class="dropdown-item {% if request.resolver_match.url_name == 'main-teacher' %}active{% endif %}" href="{% url 'main-teacher' %}">
                   <i class="ti ti-user-screen me-3 ti-md"></i><span class="align-middle">O'qituvchi</span>
                 </a>
+              {% elif request.user.now_role == "1" %}
                 <a class="dropdown-item {% if request.resolver_match.url_name == 'main-student' %}active{% endif %}" href="{% url 'main-student' %}">
                   <i class="ti ti-user me-3 ti-md"></i><span class="align-middle">O'quvchi</span>
                 </a>
+              {% endif %}
               </li>
               <li>
                 <div class="dropdown-divider my-1 mx-n2"></div>
               </li>
               <li>
                 <a class="dropdown-item" href="">
-                  <i class="ti ti-currency-dollar me-3 ti-md"></i><span class="align-middle">Mening sahifam</span>
+                  <i class="ti ti-user-bolt me-3 ti-md"></i><span class="align-middle">Mening sahifam</span>
                 </a>
               </li>
               <li>
@@ -410,7 +416,7 @@
                 <form action="{% url 'logout' %}" method="post">
                   {% csrf_token %}
                   <button type="submit" class="btn btn-sm btn-danger d-flex w-100">
-                    <span class="align-middle">Log Out</span>
+                    <span class="align-middle">Chiqish</span>
                     <i class="ti ti-logout ms-2 ti-14px"></i>
                   </button>
                 </form>

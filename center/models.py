@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from account.models import CustomUser
 from django.utils.timezone import now
 from school.models import Maktab, Sinf, Belgisi
-
+from django.core.validators import RegexValidator
 
 # Django 3.1 va undan yuqori versiyalarga mos keladigan JSONField
 try:
@@ -165,8 +165,19 @@ class SubmittedStudent(models.Model):
     sinf = models.ForeignKey(Sinf, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Sinf")
     kasb = models.ForeignKey(Kasb, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Kasb")
     yonalish = models.ForeignKey(Yonalish, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Yo'nalish")
+    filial = models.ForeignKey(Filial, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Filial")  # Added Filial field
 
     belgisi = models.CharField(max_length=100, verbose_name="Sinf Belgisi")
+
+    # Phone Number (added field)
+    phone_number = models.CharField(
+        max_length=13,  # Including country code
+        verbose_name="Telefon raqami",
+        validators=[RegexValidator(
+            regex=r'^\+998\d{9}$',
+            message="Telefon raqami +998 bilan boshlanishi va 9 raqamdan iborat bo'lishi kerak."
+        )]
+    )
 
     # Status
     status = models.CharField(
@@ -183,5 +194,4 @@ class SubmittedStudent(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.status}"
-
 
