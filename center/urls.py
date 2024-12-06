@@ -1,7 +1,7 @@
 from django.urls import path
 
 from config.decorators import verified_required
-from .views import CenterView
+from .views import CenterView, FilialDetailUpdateView
 from django.contrib.auth.decorators import login_required
 
 
@@ -45,5 +45,11 @@ urlpatterns = [
         "teacher_send_student/",
         verified_required(CenterView.as_view(template_name="teacher/send_students.html")),
         name="teacher-send-student",
-    )
+    ),
+    # New URL pattern for Filial Detail View
+    path(
+        "filial-detail/<int:pk>/",  # The `pk` will be passed to the FilialDetailView
+        verified_required(FilialDetailUpdateView.as_view(template_name="fillial_details.html")),
+        name="filial-detail",
+    ),
 ]

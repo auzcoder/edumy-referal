@@ -130,3 +130,4 @@ gunicorn.access.log
 /api/location/__pycache__
 templates/layout/bootstrap/__pycache__/__init__.cpython-312.pyc
 templates/layout/bootstrap/__pycache__/layout_vertical.cpython-312.pyc
+*.pyc

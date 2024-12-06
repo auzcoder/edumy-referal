@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import TemplateView
 
-from account.models import Roles, Regions, District, Quarters, CustomUser
+from account.models import Roles, Regions, District, Quarters, CustomUser, Gender
 from web_project import TemplateLayout
 
 
@@ -34,9 +34,7 @@ class UserAppView(TemplateView):
         return context
 
 
-
 class UserDetailView(TemplateView):
-    template_name = "user_details.html"
 
     def get_context_data(self, **kwargs):
         context = TemplateLayout.init(self, super().get_context_data(**kwargs))
@@ -51,6 +49,8 @@ class UserDetailView(TemplateView):
         context["user"] = user
         context["roles"] = Roles.objects.all()  # Barcha rollarni qo'shish
         context["phone_number"] = phone_number  # Telefon raqamni konteksga yuborish
+        context["birth_date"] = user.birth_date  # Tug‘ilgan sanani konteksga yuborish
+        context["gender"] = user.gender  # Genderni konteksga yuborish
         return context
 
     def post(self, request, *args, **kwargs):
@@ -61,6 +61,7 @@ class UserDetailView(TemplateView):
         user.first_name = request.POST.get("first_name", user.first_name)
         user.second_name = request.POST.get("second_name", user.second_name)
         user.third_name = request.POST.get("third_name", user.third_name)
+
         # Telefon raqamni boshiga +998 qo‘shish
         phone_number = request.POST.get("phone_number", "").strip()
         if phone_number:
@@ -88,6 +89,22 @@ class UserDetailView(TemplateView):
         # Rollarni yangilash
         selected_roles = request.POST.getlist("roles")  # Checkboxlardan tanlangan rollar
         user.roles.set(selected_roles)  # Foydalanuvchi rollarini yangilash
+
+        # Genderni aniqlash
+        last_name = user.second_name  # Familiya (second_name)
+        if last_name and last_name.endswith("v"):
+            gender_name = "Erkak"
+        elif last_name and last_name.endswith("a"):
+            gender_name = "Ayol"
+        else:
+            gender_name = None
+
+        if gender_name:
+            # Gender mavjudmi, tekshirish
+            gender, created = Gender.objects.get_or_create(name=gender_name)
+            user.gender = gender  # Genderni foydalanuvchiga biriktirish
+        else:
+            user.gender = None
 
         user.save()
         messages.success(request, "Foydalanuvchi muvaffaqiyatli saqlandi!")

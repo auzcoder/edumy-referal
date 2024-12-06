@@ -64,13 +64,26 @@
     numericOnly: true
   });
 
-  // Rasmni jonli ko‘rsatish
+  // Rasmni jonli ko‘rsatish va faqat kerakli formatlarni qabul qilish
   document.getElementById("imageFile").addEventListener("change", function(event) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      document.getElementById("user-image-preview").src = e.target.result;
-    };
-    reader.readAsDataURL(event.target.files[0]);
+    const file = event.target.files[0];
+
+    // Rasm fayl turi
+    const allowedFormats = ['image/png', 'image/jpeg', 'image/jpg', 'image/avif'];
+
+    if (file && allowedFormats.includes(file.type)) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById("user-image-preview").src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      // Toastr bilan xabar chiqarish
+      toastr.error("Iltimos, faqat PNG, JPG, JPEG yoki AVIF formatidagi rasmni tanlang.");
+
+      // Inputni tozalash
+      document.getElementById("imageFile").value = '';
+    }
   });
 
   // Telefon raqamni jonli ko‘rsatish
@@ -119,6 +132,21 @@
 
 {% block content %}
 <div class="container my-5">
+  <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'main-page-administrator' %}">Bosh sahifa</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'user-administrator' %}">Foydalanuvchilar</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Foydalanuvchi Tahrirlash</li>
+      </ol>
+    </nav>
+
+    <!-- Go Back Button -->
+    <div class="mb-3">
+      <a href="{% url 'user-administrator' %}" class="btn btn-secondary">
+        <i class="ti ti-arrow-back"></i> Orqaga
+      </a>
+    </div>
   <div class="card shadow-sm rounded p-4">
     <div class="row">
       <!-- Foydalanuvchi rasmi va tahrirlash -->
@@ -155,7 +183,7 @@
             </div>
 
             <!-- Telefon raqam -->
-            <div class="col-md-6">
+            <div class="col-md-4">
               <label for="phone_number" class="form-label">Telefon raqam</label>
               <div class="input-group">
                 <span class="input-group-text bg-primary text-white">+998</span>
@@ -166,9 +194,16 @@
             </div>
 
             <!-- Email -->
-            <div class="col-md-6">
+            <div class="col-md-4">
               <label for="email" class="form-label">Email</label>
               <input type="email" id="email" name="email" class="form-control" value="{{ user.email }}">
+            </div>
+
+            <!-- Tug'ilgan sana -->
+            <div class="col-md-4">
+              <label for="birth_date" class="form-label">Tug‘ilgan sana</label>
+              <input type="date" id="birth_date" name="birth_date" class="form-control"
+                     value="{{ user.birth_date|date:'Y-m-d' }}">
             </div>
 
             <!-- Type Choice va Hozirgi Rol -->
