@@ -10,6 +10,7 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.pyc.*
 
 # Django log and temporary files
 *.log
@@ -98,6 +99,7 @@ build/
 *.pyc
 *.pyo
 *.pyd
+*.pyc.*
 
 # Celery worker logs and PID files
 celerybeat-schedule
