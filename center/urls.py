@@ -46,6 +46,11 @@ urlpatterns = [
         verified_required(CenterView.as_view(template_name="teacher/send_students.html")),
         name="teacher-send-student",
     ),
+    path(
+        "bonus/",
+        verified_required(CenterView.as_view(template_name="teacher/bonus.html")),
+        name="teacher-send-bonus",
+    ),
     # New URL pattern for Filial Detail View
     path(
         "filial-detail/<int:pk>/",  # The `pk` will be passed to the FilialDetailView

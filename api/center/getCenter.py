@@ -14,7 +14,8 @@ class GetCentersWithFilialsView(View):
             data = []
 
             # Check if the user has now_role equal to 6
-            if user.now_role == '6':
+            if user.now_role == '6' or user.now_role == '2':
+
                 # If user has role 6, return all centers
                 centers = Center.objects.all()
             else:

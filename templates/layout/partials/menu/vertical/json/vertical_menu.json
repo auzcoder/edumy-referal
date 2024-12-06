@@ -44,7 +44,6 @@
       "slug": "occupations",
       "allowed_roles": [
         "6",
-        "4",
         "5"
       ]
     },
@@ -55,7 +54,6 @@
       "slug": "learning-groups",
       "allowed_roles": [
         "6",
-        "4",
         "5"
       ]
     },
@@ -66,7 +64,6 @@
       "slug": "learning-statistics",
       "allowed_roles": [
         "6",
-        "4",
         "5"
       ]
     },
@@ -83,7 +80,6 @@
     {
       "menu_header": "Maktab",
       "allowed_roles": [
-        "4",
         "6",
         "5"
       ]

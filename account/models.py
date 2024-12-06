@@ -149,6 +149,7 @@ class CustomUser(AbstractUser):
     is_verified = models.BooleanField(default=False, verbose_name="Tasdiqlangan")
 
     maktab = models.ForeignKey('school.Maktab', on_delete=models.SET_NULL, verbose_name="Maktab", null=True, blank=True)
+    sinf = models.ForeignKey('school.Sinf', on_delete=models.SET_NULL, verbose_name="Sinf", null=True, blank=True)
 
     added_by = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,related_name='created_users',verbose_name="Qo'shgan foydalanuvchi")
     def __str__(self):

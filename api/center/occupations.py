@@ -258,3 +258,30 @@ class KursListView(View):
         except Exception as e:
             return JsonResponse({"success": False, "message": str(e)}, status=400)
 
+
+class GetKasbAndYonalishView(View):
+    """
+    Kasb va Yo'nalishlarni olish uchun API.
+    """
+
+    def get(self, request, *args, **kwargs):
+        try:
+            # Get all Kasb
+            kasb_list = Kasb.objects.all()
+
+            # Prepare Kasb data
+            kasb_data = [{"id": kasb.id, "name": kasb.nomi} for kasb in kasb_list]
+
+            # Get all Yonalish based on Kasb (can also add filters if needed)
+            yonalish_data = {}
+            for kasb in kasb_list:
+                yonalish_list = Yonalish.objects.filter(kasb=kasb)
+                yonalish_data[kasb.id] = [{"id": yonalish.id, "name": yonalish.nomi} for yonalish in yonalish_list]
+
+            return JsonResponse({
+                "success": True,
+                "kasb": kasb_data,
+                "yonalish": yonalish_data
+            }, status=200)
+        except Exception as e:
+            return JsonResponse({"success": False, "message": f"Xatolik yuz berdi: {str(e)}"}, status=500)
